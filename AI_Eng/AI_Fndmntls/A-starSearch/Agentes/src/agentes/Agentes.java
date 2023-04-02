@@ -17,7 +17,7 @@ public class Agentes {
     {
         // TODO code application logic here
         
-        Escenario e = new Escenario();
+        agentes.Escenario e = new agentes.Escenario();
         e.setVisible(true);
     }
     

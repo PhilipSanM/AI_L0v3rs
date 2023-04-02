@@ -4,6 +4,7 @@
  */
 package agentes;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -16,34 +17,39 @@ import java.lang.Math;
  *
  * @author macario
  */
-public class Agente extends Thread
-{
+public class Agente extends Thread {
 
-    String nombre;
+//  THIS PART REFERS TO AN AGENT PROPRIETIES
+    String nameAgent; //name fo the agent
+
+    ImageIcon iconAgent; // his icon
+    int[][] matrix;
+    JLabel board[][]; // The board we are currently in
+
+//    CHARACTERISTICS OF POSITION IN BOARD
+    int positionYAgent;
+    int positionXAgent;
+
+    JLabel previousSquareInBoard;
+    JLabel actualSquareInBoard;
+    Random random = new Random(System.currentTimeMillis());
+
+
+//    ICONS USED WHEN INTERACT WITH THE BOARD
     ImageIcon motherIcon;
     ImageIcon smokeIcon;
     ImageIcon weedTwoIcon;
     ImageIcon weedOneIcon;
     ImageIcon weedTreeIcon;
 
-    int i;
-    int j;
-    ImageIcon icon;
-    int[][] matrix;
-    JLabel tablero[][];
-    
-    JLabel casillaAnterior;
-    JLabel casillaActual;
-    boolean cop = false;
-    boolean eraArbol = false;
-    boolean trasMari = false;
-    boolean wasWeed = false;
 
+// also flags whitn interacting with board
 
+    boolean previousSquareWasTree = false;
+    boolean gotWeed = false;
+    boolean previousSquareWasWeed = false;
 
-
-
-    Random aleatorio = new Random(System.currentTimeMillis());
+//    Also the agent has the coordinates of all the elements in board
 
     ArrayList coordenadasMotherShip = new ArrayList<Integer>();
 
@@ -51,44 +57,43 @@ public class Agente extends Thread
 
     ArrayList coordenadasObstacle = new ArrayList<Integer>();
 
-    ArrayList auxCoordinatesSample = new ArrayList<Integer>();
+    ArrayList auxCoordinatesWeed = new ArrayList<Integer>();
 
 
     
-    public Agente(String nombre, ImageIcon icon, int[][] matrix, JLabel tablero[][], ArrayList<Integer> coordenadasMotherShip, HashMap<ArrayList<Integer>,Double> weedCoordinates , ArrayList<Integer> coordenadasObstacle)
+    public Agente(String nameAgent, ImageIcon iconAgent, int[][] matrix, JLabel board[][], ArrayList<Integer> coordenadasMotherShip, HashMap<ArrayList<Integer>,Double> weedCoordinates , ArrayList<Integer> coordenadasObstacle)
     {
-        this.nombre = nombre;
-        this.icon = icon;
+        this.nameAgent = nameAgent;
+        this.iconAgent = iconAgent;
         this.matrix = matrix;
-        this.tablero = tablero;
+        this.board = board;
         this.coordenadasMotherShip = coordenadasMotherShip;
         this.coordenadasObstacle = coordenadasObstacle;
         this.weedCoordinates = weedCoordinates;
 
 
         
-        this.i = aleatorio.nextInt(matrix.length);
-        this.j = aleatorio.nextInt(matrix.length);
-        tablero[i][j].setIcon(icon);
-        motherIcon = new ImageIcon("imagenes/tree.png");
-        motherIcon = new ImageIcon(motherIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
-        smokeIcon = new ImageIcon("imagenes/smoke.png");
-        smokeIcon = new ImageIcon(smokeIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
-        weedOneIcon = new ImageIcon("imagenes/hemp.png");
-        weedOneIcon = new ImageIcon(weedOneIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        this.positionYAgent = random.nextInt(matrix.length);
+        this.positionXAgent = random.nextInt(matrix.length);
+        board[positionYAgent][positionXAgent].setIcon(iconAgent);
 
+//        Initialize Icons of game
+
+        motherIcon = new ImageIcon("imagenes/tree.png");
+        motherIcon = new ImageIcon(motherIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
+        smokeIcon = new ImageIcon("imagenes/smoke.png");
+        smokeIcon = new ImageIcon(smokeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
+        weedOneIcon = new ImageIcon("imagenes/hemp.png");
+        weedOneIcon = new ImageIcon(weedOneIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
         weedTwoIcon = new ImageIcon("imagenes/2plantas.png");
-        weedTwoIcon = new ImageIcon(weedTwoIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        weedTwoIcon = new ImageIcon(weedTwoIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
 
         weedTreeIcon = new ImageIcon("imagenes/3plantas.png");
-        weedTreeIcon = new ImageIcon(weedTreeIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        weedTreeIcon = new ImageIcon(weedTreeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
 
-        this.eraArbol = false;
-        this.trasMari = false;
-        this.wasWeed = false;
-
-
-
+        this.previousSquareWasTree = false;
+        this.gotWeed = false;
+        this.previousSquareWasWeed = false;
 
     }
 
@@ -97,101 +102,97 @@ public class Agente extends Thread
 
     public void run()
     {
-
         while(true) {
-            //posicion de robots i,j, posicion obstacle
-            casillaAnterior = tablero[i][j];
-/*
-                dirRow = aleatorio.nextInt(-1, 2); //only can move into -1 or 1
-                dirCol = aleatorio.nextInt(-1, 2);
+//            Lets play
+            
+            previousSquareInBoard = board[positionYAgent][positionXAgent];
+            
+//            Next move 
+            ArrayList<Integer> newYPosition_newXPosition = this.move2aNewPosition();
+            int nextYPosition = newYPosition_newXPosition.get(0);
+            int nextXPosition = newYPosition_newXPosition.get(1);
+            positionYAgent = positionYAgent + nextYPosition;
+            positionXAgent = positionXAgent + nextXPosition;
+            
 
-*/
+//          We are in a new position so lets check if we are in a weed or a tree
+//            For the animation or just we got a weed
 
-            ArrayList<Integer> dirCol_dirRow = this.movimiento();
-
-
-            //Add to the position
-            i=i+dirCol_dirRow.get(0);
-            j=j+dirCol_dirRow.get(1);
-
-
-
-            if(sensorArbolMariwuano()){
-                actualizarPosicionDejaArbol();
+            if(isActualSquareATree()){
+                updatePositionLeavesTree();
             }else{
-                if(sensorMineral()){
-                    actualizarPosicion();
+                if(isActualSquareAWeed()){
+                    updatePositionInBoard();
 //                    updatePositionWeed();
                     //Imagen de la weed:
-                    this.wasWeed = true;
+                    this.previousSquareWasWeed = true;
                     this.sensorGradiente();
                 }
                 else{
-                    actualizarPosicion();
+                    updatePositionInBoard();
                 }
             }
 
-            //moneedita pasa esto
-//            this.sensorGradiente();
+
 
         }
 
                       
     }
 
-    public synchronized void actualizarPosicion() {
-        casillaActual = tablero[i][j];
+    public synchronized void updatePositionInBoard() {
+        actualSquareInBoard = board[positionYAgent][positionXAgent];
 
         //System.out.println("Row: " + i + " Col:"    + j);
-        if(this.eraArbol) {
-            casillaAnterior.setIcon(null); // Elimina su figura de la casilla anterior
-            casillaAnterior.setIcon(motherIcon); // Elimina su figura de la casilla anterior
-            casillaActual.setIcon(null);
-            casillaActual.setIcon(icon);
-            this.eraArbol = false;
+        if(this.previousSquareWasTree) {
+            previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+            previousSquareInBoard.setIcon(motherIcon); // Elimina su figura de la casilla anterior
+            actualSquareInBoard.setIcon(null);
+            actualSquareInBoard.setIcon(iconAgent);
+            this.previousSquareWasTree = false;
 
-        }else if(this.wasWeed) {
-            if(weedCoordinates.get(auxCoordinatesSample) <= 0.0){
-                casillaAnterior.setIcon(null); // Elimina su figura de la casilla anterior
+        }else if(this.previousSquareWasWeed) {
+            if(weedCoordinates.get(auxCoordinatesWeed) <= 0.0){
+                previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
 //                casillaActual.setIcon(icon); // Pone su figura en la nueva casilla
-            }else if(weedCoordinates.get(auxCoordinatesSample) <= 1.0){
-                casillaAnterior.setIcon(weedOneIcon);
+            }else if(weedCoordinates.get(auxCoordinatesWeed) <= 1.0){
+                previousSquareInBoard.setIcon(weedOneIcon);
             }else{
-                casillaAnterior.setIcon(weedTwoIcon);
+                previousSquareInBoard.setIcon(weedTwoIcon);
             }
-            this.wasWeed = false;
+            this.previousSquareWasWeed = false;
         }else{
 
 
-            casillaAnterior.setIcon(null); // Elimina su figura de la casilla anterior
-            casillaActual.setIcon(icon); // Pone su figura en la nueva casilla
+            previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+            actualSquareInBoard.setIcon(iconAgent); // Pone su figura en la nueva casilla
 
         }
         sleep();
 
     }
 
-    public synchronized void actualizarPosicionDejaArbol() {
-        casillaActual = tablero[i][j];
+    public synchronized void updatePositionLeavesTree() {
+        actualSquareInBoard = board[positionYAgent][positionXAgent];
 
 
-        casillaAnterior.setIcon(null); // Elimina su figura de la casilla anterior
-        casillaActual.setIcon(null);
-        if(this.trasMari){
-            casillaActual.setIcon(smokeIcon);
-            this.trasMari= false;
+        previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+        actualSquareInBoard.setIcon(null);
+        if(this.gotWeed){
+            actualSquareInBoard.setIcon(smokeIcon);
+            this.gotWeed = false;
             try
             {
-                sleep(500+aleatorio.nextInt(1));
+                sleep(500+ random.nextInt(1));
             }
             catch (Exception ex)
             {
                 ex.printStackTrace();
             }
         }else{
-            casillaActual.setIcon(motherIcon);
+            actualSquareInBoard.setIcon(motherIcon);
         }
-        this.eraArbol = true;
+        this.previousSquareWasTree = true;
 
         //System.out.println("Row: " + i + " Col:"    + j);
         sleep();
@@ -199,20 +200,20 @@ public class Agente extends Thread
     }
 
     public synchronized void updatePositionWeed() {
-        casillaActual = tablero[i][j];
+        actualSquareInBoard = board[positionYAgent][positionXAgent];
 
         //System.out.println("Row: " + i + " Col:"    + j);
 
 
-        casillaAnterior.setIcon(null); // Elimina su figura de la casilla anterior
-        casillaActual.setIcon(icon); // Pone su figura en la nueva casilla
+        previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+        actualSquareInBoard.setIcon(iconAgent); // Pone su figura en la nueva casilla
 
         sleep();
 
     }
 
     public synchronized boolean sensorNaveNodriza(ArrayList<Integer> coordenadasNave){
-        if(i == coordenadasNave.get(1) && j == coordenadasNave.get(0)){
+        if(positionYAgent == coordenadasNave.get(1) && positionXAgent == coordenadasNave.get(0)){
             return true;
         }else{
             return false;
@@ -227,21 +228,21 @@ public class Agente extends Thread
 
         ArrayList<Integer> coordenadasNave = this.naveMasCercana();
         System.out.println("=======================================: ");
-        ArrayList<Integer> dirCol_dirRow = this.movimiento();
+        ArrayList<Integer> dirCol_dirRow = this.move2aNewPosition();
 
 
 
         while (!sensorNaveNodriza(coordenadasNave)){
             System.out.println("NAVE MAS CERCA: "+ coordenadasNave);
-            aux_x = j - coordenadasNave.get(0);
-            aux_y = i - coordenadasNave.get(1);
+            aux_x = positionXAgent - coordenadasNave.get(0);
+            aux_y = positionYAgent - coordenadasNave.get(1);
             actual_distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
             System.out.println("Distancia: "+ actual_distance);
 
             // MOVE for next
-            dirCol_dirRow = this.movimiento();
-            aux_y=i+dirCol_dirRow.get(0)- coordenadasNave.get(1);
-            aux_x=j+dirCol_dirRow.get(1) - coordenadasNave.get(0);
+            dirCol_dirRow = this.move2aNewPosition();
+            aux_y= positionYAgent +dirCol_dirRow.get(0)- coordenadasNave.get(1);
+            aux_x= positionXAgent +dirCol_dirRow.get(1) - coordenadasNave.get(0);
 
 
             //Add position
@@ -250,16 +251,16 @@ public class Agente extends Thread
             System.out.println("Distancia Sig: "+ next_distance);
 
             if (next_distance <= actual_distance + 0.3){
-                casillaAnterior = tablero[i][j];
-                i=i+dirCol_dirRow.get(0);
-                j=j+dirCol_dirRow.get(1);
+                previousSquareInBoard = board[positionYAgent][positionXAgent];
+                positionYAgent = positionYAgent +dirCol_dirRow.get(0);
+                positionXAgent = positionXAgent +dirCol_dirRow.get(1);
 
 
-                if(sensorArbolMariwuano()){
-                    actualizarPosicionDejaArbol();
+                if(isActualSquareATree()){
+                    updatePositionLeavesTree();
                 }else{
 
-                    actualizarPosicion();
+                    updatePositionInBoard();
                 }
 
             }
@@ -277,8 +278,8 @@ public class Agente extends Thread
         int x = 0;
         int y = 0;
         for(int z = 0; z < this.coordenadasMotherShip.size(); z++){
-            int aux_x = j - (int)this.coordenadasMotherShip.get(z);
-            int aux_y = i - (int)this.coordenadasMotherShip.get(z+1);
+            int aux_x = positionXAgent - (int)this.coordenadasMotherShip.get(z);
+            int aux_y = positionYAgent - (int)this.coordenadasMotherShip.get(z+1);
             distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
 
 
@@ -295,53 +296,53 @@ public class Agente extends Thread
     }
 
 
-    public synchronized ArrayList<Integer> movimiento(){
+    public synchronized ArrayList<Integer> move2aNewPosition(){
 
-
-        ArrayList<Integer> dirCol_dirRow = this.randomDir();
-
-        while(i + dirCol_dirRow.get(0) > matrix.length-1 || i+ dirCol_dirRow.get(0) < 0 || j+ dirCol_dirRow.get(1) > matrix.length-1 || j+ + dirCol_dirRow.get(1) < 0 || esUnaCop(i + dirCol_dirRow.get(0), j+ dirCol_dirRow.get(1) ,"kk")){
-            dirCol_dirRow = this.randomDir();
+        ArrayList<Integer> nextYPosition_nextXPosition = this.randomNewPosition();
+        int newYPosition = nextYPosition_nextXPosition.get(0);
+        int newXPosition = nextYPosition_nextXPosition.get(1);
+        int sizeOfBoard = matrix.length-1;
+//        Delimitating the agent position to the board
+//        Also checking that we are not in a cop
+        while(positionYAgent + newYPosition > sizeOfBoard || positionYAgent + newXPosition < 0 || positionXAgent + newXPosition > sizeOfBoard || positionXAgent + + nextYPosition_nextXPosition.get(1) < 0 || isActualSquareACop(positionYAgent + newYPosition, positionXAgent + newXPosition ,"kk")){
+            nextYPosition_nextXPosition = this.randomNewPosition();
         }
-
-
-        return dirCol_dirRow;
-
+        return nextYPosition_nextXPosition;
     }
 
-    public synchronized ArrayList<Integer> randomDir(){
+    public synchronized ArrayList<Integer> randomNewPosition(){
         //        Y = i / X = j
 //        DirCol / DirRow
-        int[] norte ={ 1, 0} ;
-        int[] sur = {-1, 0};
-        int[] este = {0,1};
-        int[] oeste = {0,-1};
-        ArrayList<Integer> dirCol_dirRow = new ArrayList<Integer>();
+        int[] moveNorth ={ 1, 0} ;
+        int[] moveSouth = {-1, 0};
+        int[] moveEast = {0,1};
+        int[] moveWeast = {0,-1};
+        ArrayList<Integer> newY_newX = new ArrayList<Integer>();
 
-        int random = aleatorio.nextInt(0, 4);
+        int random = this.random.nextInt(0, 4);
         switch (random) {
             case 0:
-                dirCol_dirRow.add(norte[0]);
-                dirCol_dirRow.add(norte[1]);
+                newY_newX.add(moveNorth[0]);
+                newY_newX.add(moveNorth[1]);
                 break;
             case 1:
-                dirCol_dirRow.add(sur[0]);
-                dirCol_dirRow.add(sur[1]);
+                newY_newX.add(moveSouth[0]);
+                newY_newX.add(moveSouth[1]);
                 break;
             case 2:
-                dirCol_dirRow.add(este[0]);
-                dirCol_dirRow.add(este[1]);
+                newY_newX.add(moveEast[0]);
+                newY_newX.add(moveEast[1]);
                 break;
             case 3:
-                dirCol_dirRow.add(oeste[0]);
-                dirCol_dirRow.add(oeste[1]);
+                newY_newX.add(moveWeast[0]);
+                newY_newX.add(moveWeast[1]);
                 break;
         }
-        return dirCol_dirRow;
+        return newY_newX;
 
     }
 
-    public synchronized boolean esUnaCop(int i_new, int j_new, String sensor) {
+    public synchronized boolean isActualSquareACop(int i_new, int j_new, String sensor) {
         int a = 0;
         int b = 0;
         for (int recorrido = 0; recorrido < this.coordenadasObstacle.size(); recorrido++) { //Recorre todos los elementos
@@ -359,42 +360,49 @@ public class Agente extends Thread
         return false;
     }
 
-    public synchronized boolean sensorMineral(){
+    public synchronized boolean isActualSquareAWeed(){
 //        i = y
+        int positionY = 1;
+        int positionX = 0;
+//        Iterating through all the hash map
         for (ArrayList<Integer> coordinatesInHashMap: weedCoordinates.keySet()) {
 //            System.out.println("Coordenada en hash = "+ coordinatesInHashMap + "-- nuevas: "+ coordinates)
-            if(coordinatesInHashMap.get(1) == i && coordinatesInHashMap.get(0) == j){
+//            Checking if actual position is a coordinate in weed coordinates
+            if(coordinatesInHashMap.get(positionY) == positionYAgent && coordinatesInHashMap.get(positionX) == positionXAgent){
+//              Also checking if there is still some weed in that square
+                Double weedsLeftOver = weedCoordinates.get(coordinatesInHashMap);
 
-                if(weedCoordinates.get(coordinatesInHashMap) > 0.0){
-                    //Eliminacion de mari
-                    weedCoordinates.put(coordinatesInHashMap, weedCoordinates.get(coordinatesInHashMap)- 1.0);
-                    System.out.println("AGARRALA GORDOOOOOOOOOOO");
-                    System.out.println(weedCoordinates);
-                    //Trae mari
-                    this.auxCoordinatesSample = coordinatesInHashMap;
-                    this.trasMari= true;
+                if(weedsLeftOver > 0.0){
+//                    Eliminating a weed in that square
+                    weedCoordinates.put(coordinatesInHashMap, weedsLeftOver- 1.0);
+//                    System.out.println("AGARRALA GORDOOOOOOOOOOO");
+//                    System.out.println(weedCoordinates);
 
+//                    Taking the actual coordinates of the weed
+                    this.auxCoordinatesWeed = coordinatesInHashMap;
+//                    So you have one weed in your hands
+                    this.gotWeed = true;
                     return true;
                 }else{
-                    System.out.println("Huevos me las acabe");
+                    System.out.println("Shit theres is no more weed here");
                 }
             }
         }
         return false;
 
     }
-    public synchronized boolean sensorArbolMariwuano(){
+    public synchronized boolean isActualSquareATree(){
         int a = 0;
         int b = 0;
 
         for (int recorrido = 0; recorrido < this.coordenadasMotherShip.size(); recorrido++) { //Recorre todos los elementos
             a = (int) this.coordenadasMotherShip.get(recorrido);
             b = (int) this.coordenadasMotherShip.get(recorrido + 1);
-            //System.out.println("ACTUAL DATA " + " (i,j) =  " + i_new + "," + j_new + " "+ "  a,b "+ a + "," + b);
+
             recorrido = recorrido + 1;
-            if (b == i && a == j) {
-                System.out.println("><<<<<<<<<<<<<<<<<<<"  + "<<<<<<<<<<<<<<<<<<<<");
-                System.out.println("ARRBOOOOOOLLLLL");
+            if (b == positionYAgent && a == positionXAgent) {
+//                System.out.println("><<<<<<<<<<<<<<<<<<<"  + "<<<<<<<<<<<<<<<<<<<<");
+//                System.out.println("ARRBOOOOOOLLLLL");
 
                 return true;
             }
@@ -405,7 +413,7 @@ public class Agente extends Thread
     public synchronized void sleep(){
         try
         {
-            sleep(100+aleatorio.nextInt(1));
+            sleep(100+ random.nextInt(1));
         }
         catch (Exception ex)
         {

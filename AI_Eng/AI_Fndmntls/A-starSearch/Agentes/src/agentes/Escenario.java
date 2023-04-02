@@ -4,6 +4,9 @@
  */
 package agentes;
 
+import agentes.Agente;
+import agentes.BackGroundPanel;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
