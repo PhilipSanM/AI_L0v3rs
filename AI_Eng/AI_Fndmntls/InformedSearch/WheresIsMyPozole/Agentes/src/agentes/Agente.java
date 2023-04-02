@@ -126,7 +126,7 @@ public class Agente extends Thread {
 //                    updatePositionWeed();
                     //Imagen de la weed:
                     this.previousSquareWasWeed = true;
-                    this.sensorGradiente();
+                    this.bestFirstSearch();
                 }
                 else{
                     updatePositionInBoard();
@@ -212,37 +212,39 @@ public class Agente extends Thread {
 
     }
 
-    public synchronized boolean sensorNaveNodriza(ArrayList<Integer> coordenadasNave){
-        if(positionYAgent == coordenadasNave.get(1) && positionXAgent == coordenadasNave.get(0)){
+    public synchronized boolean iAmInATree(ArrayList<Integer> treeCoordinates){
+        int coordinateYOfTree = treeCoordinates.get(1);
+        int coordinateXOfTree = treeCoordinates.get(0);
+        if(positionYAgent == coordinateYOfTree && positionXAgent == coordinateXOfTree){
             return true;
         }else{
             return false;
         }
 
     }
-    public synchronized void sensorGradiente(){
+    public synchronized void bestFirstSearch(){
         double actual_distance = 0;
         double next_distance = 0;
         int aux_x =0;
         int aux_y = 0;
 
-        ArrayList<Integer> coordenadasNave = this.naveMasCercana();
+        ArrayList<Integer> treeCoordinates = this.findNearestTreeCoordinates();
         System.out.println("=======================================: ");
         ArrayList<Integer> dirCol_dirRow = this.move2aNewPosition();
 
 
 
-        while (!sensorNaveNodriza(coordenadasNave)){
-            System.out.println("NAVE MAS CERCA: "+ coordenadasNave);
-            aux_x = positionXAgent - coordenadasNave.get(0);
-            aux_y = positionYAgent - coordenadasNave.get(1);
+        while (!iAmInATree(treeCoordinates)){
+//            System.out.println("NAVE MAS CERCA: "+ treeCoordinates);
+            aux_x = positionXAgent - treeCoordinates.get(0);
+            aux_y = positionYAgent - treeCoordinates.get(1);
             actual_distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
             System.out.println("Distancia: "+ actual_distance);
 
             // MOVE for next
             dirCol_dirRow = this.move2aNewPosition();
-            aux_y= positionYAgent +dirCol_dirRow.get(0)- coordenadasNave.get(1);
-            aux_x= positionXAgent +dirCol_dirRow.get(1) - coordenadasNave.get(0);
+            aux_y= positionYAgent +dirCol_dirRow.get(0)- treeCoordinates.get(1);
+            aux_x= positionXAgent +dirCol_dirRow.get(1) - treeCoordinates.get(0);
 
 
             //Add position
@@ -271,7 +273,7 @@ public class Agente extends Thread {
 
 
     }
-    public synchronized ArrayList<Integer> naveMasCercana(){
+    public synchronized ArrayList<Integer> findNearestTreeCoordinates(){
         ArrayList<Integer> coordenadas = new ArrayList<Integer>();
         double distance = 0;
         double low_distance = 1000000;
