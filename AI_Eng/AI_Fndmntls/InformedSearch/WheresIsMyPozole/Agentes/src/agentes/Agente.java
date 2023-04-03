@@ -36,11 +36,11 @@ public class Agente extends Thread {
 
 
 //    ICONS USED WHEN INTERACT WITH THE BOARD
-    ImageIcon motherIcon;
+    ImageIcon treeIcon;
     ImageIcon smokeIcon;
     ImageIcon weedTwoIcon;
     ImageIcon weedOneIcon;
-    ImageIcon weedTreeIcon;
+    ImageIcon weedThreeIcon;
 
 
 // also flags whitn interacting with board
@@ -51,39 +51,34 @@ public class Agente extends Thread {
 
 //    Also the agent has the coordinates of all the elements in board
 
-    ArrayList coordenadasMotherShip = new ArrayList<Integer>();
-
     HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
     HashMap<ArrayList<Integer>,Double> treeCoordinates = new HashMap<ArrayList<Integer>, Double>();
     HashMap<ArrayList<Integer>,Double> copCoordinates = new HashMap<ArrayList<Integer>, Double>();
 
-
-    ArrayList coordenadasObstacle = new ArrayList<Integer>();
-
     ArrayList auxCoordinatesWeed = new ArrayList<Integer>();
 
 
+
     
-    public Agente(String nameAgent, ImageIcon iconAgent, int[][] matrix, JLabel board[][], ArrayList<Integer> coordenadasMotherShip, HashMap<ArrayList<Integer>,Double> weedCoordinates , ArrayList<Integer> coordenadasObstacle)
-    {
+    public Agente(String nameAgent, ImageIcon iconAgent, int[][] matrix, JLabel board[][],HashMap<ArrayList<Integer>,Double> treeCoordinates, HashMap<ArrayList<Integer>,Double> weedCoordinates, HashMap<ArrayList<Integer>,Double> copCoordinates) {
+        //  THIS PART REFERS TO AN AGENT PROPRIETIES
         this.nameAgent = nameAgent;
         this.iconAgent = iconAgent;
         this.matrix = matrix;
         this.board = board;
-        this.coordenadasMotherShip = coordenadasMotherShip;
-        this.coordenadasObstacle = coordenadasObstacle;
+        this.treeCoordinates = treeCoordinates;
+        this.copCoordinates = copCoordinates;
         this.weedCoordinates = weedCoordinates;
 
-
-        
+        //  THIS PART REFERS TO THE POSITION IN BOARD
         this.positionYAgent = random.nextInt(matrix.length);
         this.positionXAgent = random.nextInt(matrix.length);
         board[positionYAgent][positionXAgent].setIcon(iconAgent);
 
-//        Initialize Icons of game
+//        ICONS THAT WILL BE USEFUL INTERACTING WITH BOARD
 
-        motherIcon = new ImageIcon("imagenes/tree.png");
-        motherIcon = new ImageIcon(motherIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
+        treeIcon = new ImageIcon("imagenes/tree.png");
+        treeIcon = new ImageIcon(treeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
         smokeIcon = new ImageIcon("imagenes/smoke.png");
         smokeIcon = new ImageIcon(smokeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
         weedOneIcon = new ImageIcon("imagenes/hemp.png");
@@ -91,9 +86,10 @@ public class Agente extends Thread {
         weedTwoIcon = new ImageIcon("imagenes/2plantas.png");
         weedTwoIcon = new ImageIcon(weedTwoIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
 
-        weedTreeIcon = new ImageIcon("imagenes/3plantas.png");
-        weedTreeIcon = new ImageIcon(weedTreeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
+        weedThreeIcon = new ImageIcon("imagenes/3plantas.png");
+        weedThreeIcon = new ImageIcon(weedThreeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
 
+//        FLAGS FOR TREE, COP AND GOT WEED
         this.previousSquareWasTree = false;
         this.gotWeed = false;
         this.previousSquareWasWeed = false;
@@ -103,8 +99,7 @@ public class Agente extends Thread {
 
 
 
-    public void run()
-    {
+    public void run() {
         while(true) {
 //            Lets play
             
@@ -150,7 +145,7 @@ public class Agente extends Thread {
         //System.out.println("Row: " + i + " Col:"    + j);
         if(this.previousSquareWasTree) {
             previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
-            previousSquareInBoard.setIcon(motherIcon); // Elimina su figura de la casilla anterior
+            previousSquareInBoard.setIcon(treeIcon); // Elimina su figura de la casilla anterior
             actualSquareInBoard.setIcon(null);
             actualSquareInBoard.setIcon(iconAgent);
             this.previousSquareWasTree = false;
@@ -194,7 +189,7 @@ public class Agente extends Thread {
                 ex.printStackTrace();
             }
         }else{
-            actualSquareInBoard.setIcon(motherIcon);
+            actualSquareInBoard.setIcon(treeIcon);
         }
         this.previousSquareWasTree = true;
 
@@ -278,27 +273,33 @@ public class Agente extends Thread {
 
     }
     public synchronized ArrayList<Integer> findNearestTreeCoordinates(){
-        ArrayList<Integer> coordenadas = new ArrayList<Integer>();
-        double distance = 0;
-        double low_distance = 1000000;
-        int x = 0;
-        int y = 0;
-        for(int z = 0; z < this.coordenadasMotherShip.size(); z++){
-            int aux_x = positionXAgent - (int)this.coordenadasMotherShip.get(z);
-            int aux_y = positionYAgent - (int)this.coordenadasMotherShip.get(z+1);
-            distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
+        ArrayList<Integer> treeNearestCoordinates = new ArrayList<Integer>();
+        double distance2Tree = 0;
+        double shortestDistance2Tree = 100000000;
+        int treeXCoordinate = 0;
+        int treeYCoordinate = 0;
 
+        int positionY = 1;
+        int positionX = 0;
 
-            if (distance < low_distance){
-                low_distance = distance;
-                x = (int)this.coordenadasMotherShip.get(z);
-                y = (int)this.coordenadasMotherShip.get(z+1);
+        System.out.println("COORDENADAS TREEE--"+ treeCoordinates);
+        for (ArrayList<Integer> treeCoordinate: treeCoordinates.keySet()) {
+            int aux4CalculatingDistanceX = positionXAgent - treeCoordinate.get(positionX);
+            int aux4CalculatingDistanceY = positionYAgent - treeCoordinate.get(positionY);
+            distance2Tree = Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
+            System.out.println(distance2Tree +" -- "+ shortestDistance2Tree);
+
+            if (distance2Tree < shortestDistance2Tree){
+                shortestDistance2Tree = distance2Tree;
+                treeXCoordinate = treeCoordinate.get(positionX);
+                treeYCoordinate = treeCoordinate.get(positionY);
             }
-            z++;
+
         }
-        coordenadas.add(x);
-        coordenadas.add(y);
-        return coordenadas;
+        treeNearestCoordinates.add(treeXCoordinate);
+        treeNearestCoordinates.add(treeYCoordinate);
+        System.out.println(treeNearestCoordinates);
+        return treeNearestCoordinates;
     }
 
 
@@ -308,12 +309,20 @@ public class Agente extends Thread {
         int newYPosition = nextYPosition_nextXPosition.get(0);
         int newXPosition = nextYPosition_nextXPosition.get(1);
         int sizeOfBoard = matrix.length-1;
-//        Delimitating the agent position to the board
+//        Delimitation the agent position to the board
 //        Also checking that we are not in a cop
-        while(positionYAgent + newYPosition > sizeOfBoard || positionYAgent + newYPosition < 0 || positionXAgent + newXPosition > sizeOfBoard || positionXAgent + newXPosition < 0 || isActualSquareACop(positionYAgent + newYPosition, positionXAgent + newXPosition)){
+        int nextXPosition = positionXAgent + newXPosition;
+        int nextYPosition = positionYAgent + newYPosition;
+        while(nextYPosition > sizeOfBoard || nextYPosition < 0 || nextXPosition > sizeOfBoard || nextXPosition < 0 || isNextSquareACop(nextYPosition, nextXPosition)){
+
+//            Finding new positions to X and Y
             nextYPosition_nextXPosition = this.randomNewPosition();
             newYPosition = nextYPosition_nextXPosition.get(0);
             newXPosition = nextYPosition_nextXPosition.get(1);
+
+//            Adding those position to think about the next position
+            nextXPosition = positionXAgent + newXPosition;
+            nextYPosition = positionYAgent + newYPosition;
         }
         return nextYPosition_nextXPosition;
     }
@@ -350,21 +359,14 @@ public class Agente extends Thread {
 
     }
 
-    public synchronized boolean isActualSquareACop(int i_new, int j_new) {
-        int a = 0;
-        int b = 0;
-        for (int recorrido = 0; recorrido < this.coordenadasObstacle.size(); recorrido++) { //Recorre todos los elementos
-            a = (int) this.coordenadasObstacle.get(recorrido);
-            b = (int) this.coordenadasObstacle.get(recorrido + 1);
-            //System.out.println("ACTUAL DATA " + " (i,j) =  " + i_new + "," + j_new + " "+ "  a,b "+ a + "," + b);
-            recorrido = recorrido + 1;
-            if (b == i_new && a == j_new) {
-//                System.out.println("><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-//                System.out.println("CORRELE GORDOOOOOOOOOO CORRELE");
+    public synchronized boolean isNextSquareACop(int nextYPosition, int nextXPosition) {
+        int positionY = 1;
+        int positionX = 0;
+        for (ArrayList<Integer> copCoordinate: copCoordinates.keySet()) {
+            if(copCoordinate.get(positionY) == nextYPosition && copCoordinate.get(positionX) == nextXPosition){
                 return true;
             }
         }
-
         return false;
     }
 
@@ -373,21 +375,21 @@ public class Agente extends Thread {
         int positionY = 1;
         int positionX = 0;
 //        Iterating through all the hash map
-        for (ArrayList<Integer> coordinatesInHashMap: weedCoordinates.keySet()) {
+        for (ArrayList<Integer> weedCoordinateInHashMap: weedCoordinates.keySet()) {
 //            System.out.println("Coordenada en hash = "+ coordinatesInHashMap + "-- nuevas: "+ coordinates)
 //            Checking if actual position is a coordinate in weed coordinates
-            if(coordinatesInHashMap.get(positionY) == positionYAgent && coordinatesInHashMap.get(positionX) == positionXAgent){
+            if(weedCoordinateInHashMap.get(positionY) == positionYAgent && weedCoordinateInHashMap.get(positionX) == positionXAgent){
 //              Also checking if there is still some weed in that square
-                Double weedsLeftOver = weedCoordinates.get(coordinatesInHashMap);
+                Double weedsLeftOver = weedCoordinates.get(weedCoordinateInHashMap);
 
                 if(weedsLeftOver > 0.0){
 //                    Eliminating a weed in that square
-                    weedCoordinates.put(coordinatesInHashMap, weedsLeftOver- 1.0);
+                    weedCoordinates.put(weedCoordinateInHashMap, weedsLeftOver- 1.0);
 //                    System.out.println("AGARRALA GORDOOOOOOOOOOO");
 //                    System.out.println(weedCoordinates);
 
 //                    Taking the actual coordinates of the weed
-                    this.auxCoordinatesWeed = coordinatesInHashMap;
+                    this.auxCoordinatesWeed = weedCoordinateInHashMap;
 //                    So you have one weed in your hands
                     this.gotWeed = true;
                     return true;
@@ -400,23 +402,14 @@ public class Agente extends Thread {
 
     }
     public synchronized boolean isActualSquareATree(){
-        int a = 0;
-        int b = 0;
-
-        for (int recorrido = 0; recorrido < this.coordenadasMotherShip.size(); recorrido++) { //Recorre todos los elementos
-            a = (int) this.coordenadasMotherShip.get(recorrido);
-            b = (int) this.coordenadasMotherShip.get(recorrido + 1);
-
-            recorrido = recorrido + 1;
-            if (b == positionYAgent && a == positionXAgent) {
-//                System.out.println("><<<<<<<<<<<<<<<<<<<"  + "<<<<<<<<<<<<<<<<<<<<");
-//                System.out.println("ARRBOOOOOOLLLLL");
-
+        int positionY = 1;
+        int positionX = 0;
+        for (ArrayList<Integer> treeCoordinate: treeCoordinates.keySet()) {
+            if(treeCoordinate.get(positionY) == positionYAgent && treeCoordinate.get(positionX) == positionXAgent){
                 return true;
             }
         }
         return false;
-
     }
     public synchronized void sleep(){
         try

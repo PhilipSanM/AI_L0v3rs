@@ -4,9 +4,6 @@
  */
 package agentes;
 
-import agentes.Agente;
-import agentes.BackGroundPanel;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -34,55 +31,50 @@ public class Escenario extends JFrame
 {
 
     
-    private JLabel[][] tablero;     
+    private JLabel[][] board;
     private int[][] matrix;
     private final int dim = 15;
 
-    private ImageIcon robot1;
-    private ImageIcon robot2;
+    private ImageIcon brandomIcon;
+    private ImageIcon emiIcon;
     private ImageIcon obstacleIcon;
-    private ImageIcon sampleIcon;
-    private ImageIcon sampleIconTwo;
-    private ImageIcon sampleIconTree;
+    private ImageIcon weedOneIcon;
+    private ImageIcon weedTwoIcon;
+    private ImageIcon weedThreeIcon;
     private ImageIcon actualIcon;
-    private ImageIcon motherIcon;
+    private ImageIcon treeIcon;
 
     private ImageIcon smokeIcon;
     
     private Agente brandom;
     private Agente emi;
 
-    public ArrayList coordenadasMotherShip = new ArrayList<Integer>();
+    HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
+    HashMap<ArrayList<Integer>,Double> treeCoordinates = new HashMap<ArrayList<Integer>, Double>();
+    HashMap<ArrayList<Integer>,Double> copCoordinates = new HashMap<ArrayList<Integer>, Double>();
 
-    public ArrayList coordenadasSample = new ArrayList<Integer>();
-
-    public ArrayList coordenadasObstacle = new ArrayList<Integer>();
-
-    public HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
-
-    private final BackGroundPanel fondo = new BackGroundPanel(new ImageIcon("imagenes/scene.png"));
+    private final BackGroundPanel backGroundPanel = new BackGroundPanel(new ImageIcon("imagenes/scene.png"));
     private final JMenu settings = new JMenu("Settings"); //Parte 1 del menu
-    private final JRadioButtonMenuItem obstacle = new JRadioButtonMenuItem("Puerk");
-    private final JRadioButtonMenuItem sample = new JRadioButtonMenuItem("Buds");
-    private final JRadioButtonMenuItem motherShip = new JRadioButtonMenuItem("spot");
+    private final JRadioButtonMenuItem copMenuItem = new JRadioButtonMenuItem("Cop");
+    private final JRadioButtonMenuItem weedMenuItem = new JRadioButtonMenuItem("Weed");
+    private final JRadioButtonMenuItem treeMenuItem = new JRadioButtonMenuItem("Tree");
     
     public Escenario()
     {
-        this.setContentPane(fondo);
-        this.setTitle("Agentes");
+        this.setContentPane(backGroundPanel);
+        this.setTitle("Agents");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setBounds(50,50,dim*50+35,dim*50+85);
         initComponents();
     }
         
-    public void initComponents()
-    {
-
+    public void initComponents() {
+//        INIT OF THE BACKGROUN
 
         ButtonGroup settingsOptions = new ButtonGroup();
-        settingsOptions.add(sample);
-        settingsOptions.add(obstacle);       
-        settingsOptions.add(motherShip);
+        settingsOptions.add(weedMenuItem);
+        settingsOptions.add(copMenuItem);
+        settingsOptions.add(treeMenuItem);
         
         JMenuBar barraMenus = new JMenuBar();
         JMenu file = new JMenu("File");
@@ -95,42 +87,42 @@ public class Escenario extends JFrame
         barraMenus.add(settings);
         file.add(run);
         file.add(exit);
-        settings.add(motherShip);
-        settings.add(obstacle);
-        settings.add(sample);
+        settings.add(treeMenuItem);
+        settings.add(copMenuItem);
+        settings.add(weedMenuItem);
             
-        robot1 = new ImageIcon("imagenes/persona1.png");
-        robot1 = new ImageIcon(robot1.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        brandomIcon = new ImageIcon("imagenes/persona1.png");
+        brandomIcon = new ImageIcon(brandomIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
         
-        robot2 = new ImageIcon("imagenes/persona2.png");
-        robot2 = new ImageIcon(robot2.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        emiIcon = new ImageIcon("imagenes/persona2.png");
+        emiIcon = new ImageIcon(emiIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
         
         obstacleIcon = new ImageIcon("imagenes/cop.png");
         obstacleIcon = new ImageIcon(obstacleIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
         
-        sampleIcon = new ImageIcon("imagenes/hemp.png");
-        sampleIcon = new ImageIcon(sampleIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        weedOneIcon = new ImageIcon("imagenes/hemp.png");
+        weedOneIcon = new ImageIcon(weedOneIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
 
-        sampleIconTwo = new ImageIcon("imagenes/2plantas.png");
-        sampleIconTwo = new ImageIcon(sampleIconTwo.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        weedTwoIcon = new ImageIcon("imagenes/2plantas.png");
+        weedTwoIcon = new ImageIcon(weedTwoIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
 
-        sampleIconTree = new ImageIcon("imagenes/3plantas.png");
-        sampleIconTree = new ImageIcon(sampleIconTree.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        weedThreeIcon = new ImageIcon("imagenes/3plantas.png");
+        weedThreeIcon = new ImageIcon(weedThreeIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
 
-        motherIcon = new ImageIcon("imagenes/tree.png");
-        motherIcon = new ImageIcon(motherIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
+        treeIcon = new ImageIcon("imagenes/tree.png");
+        treeIcon = new ImageIcon(treeIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
         //Added 06/03/2023
         smokeIcon = new ImageIcon("imagenes/smoke.png");
         smokeIcon = new ImageIcon(smokeIcon.getImage().getScaledInstance(50,50,  java.awt.Image.SCALE_SMOOTH));
         
         this.setLayout(null);
-        formaPlano();  
+        makeBoard();
         
-        exit.addActionListener(evt -> gestionaSalir(evt));
-        run.addActionListener(evt -> gestionaRun(evt));
-        obstacle.addItemListener(evt -> gestionaObstacle(evt));
-        sample.addItemListener(evt -> gestionaSample(evt));
-        motherShip.addItemListener(evt -> gestionaMotherShip(evt));
+        exit.addActionListener(evt -> exitHandler(evt));
+        run.addActionListener(evt -> runHandler(evt));
+        copMenuItem.addItemListener(evt -> copManage(evt));
+        weedMenuItem.addItemListener(evt -> weedManage(evt));
+        treeMenuItem.addItemListener(evt -> treeManage(evt));
 
               
             
@@ -144,14 +136,14 @@ public class Escenario extends JFrame
         addWindowListener(new MyWindowAdapter());
         
 
-        brandom = new Agente("Brandom",robot1, matrix, tablero, coordenadasMotherShip, weedCoordinates, coordenadasObstacle);
-        emi = new Agente("Emi",robot2, matrix, tablero, coordenadasMotherShip, weedCoordinates, coordenadasObstacle);
+        brandom = new Agente("Brandom", brandomIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates);
+        emi = new Agente("Emi", emiIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates);
 
 
         
     }
         
-    private void gestionaSalir(ActionEvent eventObject)
+    private void exitHandler(ActionEvent eventObject)
     {
         goodBye();
     }
@@ -161,9 +153,9 @@ public class Escenario extends JFrame
         System.exit(0);
     }
 
-    private void formaPlano()
+    private void makeBoard()
     {
-        tablero = new JLabel[dim][dim];
+        board = new JLabel[dim][dim];
         matrix = new int[dim][dim];
         
         int i, j;
@@ -172,25 +164,25 @@ public class Escenario extends JFrame
             for(j=0;j<dim;j++)
             {
                 matrix[i][j]=0;
-                tablero[i][j]=new JLabel();
-                tablero[i][j].setBounds(j*50+10,i*50+10,50,50);
-                tablero[i][j].setBorder(BorderFactory.createDashedBorder(Color.white));
-                tablero[i][j].setOpaque(false);
-                this.add(tablero[i][j]);
+                board[i][j]=new JLabel();
+                board[i][j].setBounds(j*50+10,i*50+10,50,50);
+                board[i][j].setBorder(BorderFactory.createDashedBorder(Color.white));
+                board[i][j].setOpaque(false);
+                this.add(board[i][j]);
                 
-                tablero[i][j].addMouseListener(new MouseAdapter() // Este listener nos ayuda a agregar poner objetos en la rejilla
+                board[i][j].addMouseListener(new MouseAdapter() // Este listener nos ayuda a agregar poner objetos en la rejilla
                     {
                         @Override
                         public void mousePressed(MouseEvent e) 
                         {
-                               insertaObjeto(e);
+                               insertObject(e);
 
                         }   
                 
                         @Override
                         public void mouseReleased(MouseEvent e) 
                         {
-                                insertaObjeto(e);
+                                insertObject(e);
                         }   
                 
                     });
@@ -200,35 +192,37 @@ public class Escenario extends JFrame
 
 
         
-    private void gestionaObstacle(ItemEvent eventObject)
+    private void copManage(ItemEvent eventObject)
     {
         JRadioButtonMenuItem opt = (JRadioButtonMenuItem) eventObject.getSource();
-        if(opt.isSelected()) { //Seleccion desde el menú
+        if(opt.isSelected()) {
             actualIcon = obstacleIcon;
         }
         else actualIcon = null;
     }
-    private void gestionaSample(ItemEvent eventObject)
+    private void weedManage(ItemEvent eventObject)
     {
         JRadioButtonMenuItem opt = (JRadioButtonMenuItem) eventObject.getSource();
         if(opt.isSelected())
-           actualIcon = sampleIcon;
+           actualIcon = weedOneIcon;
         else actualIcon = null;   
     }
-    private void gestionaMotherShip(ItemEvent eventObject)
+    private void treeManage(ItemEvent eventObject)
     {
         JRadioButtonMenuItem opt = (JRadioButtonMenuItem) eventObject.getSource();
         if(opt.isSelected())
-           actualIcon = motherIcon;
+           actualIcon = treeIcon;
         else actualIcon = null;   
     }
-    private void gestionaRun(ActionEvent eventObject)
+    private void runHandler(ActionEvent eventObject)
     {
-        mapeoCoordenadas(coordenadasMotherShip);
-        mapeoCoordenadas(coordenadasSample);
-        mapeoCoordenadas(coordenadasObstacle);
+
         System.out.println("ARREGLO DE MARIS ======");
         System.out.println(weedCoordinates);
+        System.out.println("ARREGLO DE TREES ======");
+        System.out.println(treeCoordinates);
+        System.out.println("ARREGLO DE Cops ======");
+        System.out.println(copCoordinates);
 
 
 
@@ -238,49 +232,29 @@ public class Escenario extends JFrame
         settings.setEnabled(false);
     }
        
-    public void insertaObjeto(MouseEvent e)
-    {
-        JLabel casilla = (JLabel) e.getSource();
+    public void insertObject(MouseEvent e) {
+        JLabel squareInBoard = (JLabel) e.getSource();
 
-        if(actualIcon!=null) casilla.setIcon(actualIcon);
-        if(actualIcon == motherIcon){
-
-            System.out.println("has puesto un spot");
-            System.out.println("X: " + mappingFromEscene(casilla.getX()) + " Y: " + mappingFromEscene(casilla.getY()));
-            coordenadasMotherShip.add(mappingFromEscene(casilla.getX()));
-            coordenadasMotherShip.add(mappingFromEscene(casilla.getY()));
-
+        if(actualIcon!=null) squareInBoard.setIcon(actualIcon);
+        ArrayList coordinatesOfObject = new ArrayList<Integer>();
+        int coordinateXOfObject = mappingFromEscene(squareInBoard.getX());
+        int coordinateYOfObject = mappingFromEscene(squareInBoard.getY());
+        coordinatesOfObject.add(coordinateXOfObject);
+        coordinatesOfObject.add(coordinateYOfObject);
+        if(actualIcon == treeIcon){
+//            System.out.println("has puesto un spot");
+            addingElementToHashMap(treeCoordinates,coordinatesOfObject,squareInBoard,false);
 
         }
 
         if (actualIcon == obstacleIcon){
-            System.out.println("has puesto un puerco");
-            coordenadasObstacle.add(mappingFromEscene(casilla.getX()));
-            coordenadasObstacle.add(mappingFromEscene(casilla.getY()));
+//            System.out.println("has puesto un puerco");
+            addingElementToHashMap(copCoordinates,coordinatesOfObject,squareInBoard,false);
 
         }
-        if (actualIcon == sampleIcon){
-            System.out.println("has puesto una mariwana");
-            ArrayList coordinates = new ArrayList<Integer>();
-            int x = mappingFromEscene(casilla.getX());
-            int y = mappingFromEscene(casilla.getY());
-            coordinates.add(x);
-            coordinates.add(y);
-            if(checkIfItIsAlreadyInHashMap(weedCoordinates, coordinates)){
-//                System.out.println("Ya estan ahi las coordenadas");
-                weedCoordinates.put(coordinates, weedCoordinates.get(coordinates)+0.5);
-                // New sample icon
-                if(weedCoordinates.get(coordinates) <= 1.0){
-                    casilla.setIcon(sampleIcon);
-                }else if (weedCoordinates.get(coordinates) > 1.0 && weedCoordinates.get(coordinates) <= 2.0){
-                    casilla.setIcon(sampleIconTwo);
-                }else{
-                    casilla.setIcon(sampleIconTree);
-                }
-            }else{
-
-                weedCoordinates.put(coordinates, 0.5);
-            }
+        if (actualIcon == weedOneIcon){
+//            System.out.println("has puesto una mariwana");
+            addingElementToHashMap(weedCoordinates,coordinatesOfObject,squareInBoard,true);
 
         }
     }
@@ -293,17 +267,7 @@ public class Escenario extends JFrame
         }
     }
 
-    private void mapeoCoordenadas(ArrayList<Integer> arreglo){
-        int remover = 2;
-        int tam = arreglo.size()/4;
-        for(int i = 0; i < tam ; i++){
-            arreglo.remove(remover);
 
-            arreglo.remove(remover);
-            remover += 2;
-
-        }
-    }
 
     private boolean checkIfItIsAlreadyInHashMap(HashMap<ArrayList<Integer>, Double> hashMapCoordinates, ArrayList<Integer> coordinates){
         for (ArrayList<Integer> coordinatesInHashMap: hashMapCoordinates.keySet()) {
@@ -314,6 +278,30 @@ public class Escenario extends JFrame
             }
         }
         return false;
+    }
+
+
+
+    private void addingElementToHashMap(HashMap<ArrayList<Integer>, Double> hashMapCoordinates, ArrayList<Integer> coordinates,JLabel squareInBoard,  boolean itsAWeed){
+
+        if(checkIfItIsAlreadyInHashMap(hashMapCoordinates, coordinates)){
+//                System.out.println("Ya estan ahi las coordenadas");
+            hashMapCoordinates.put(coordinates, hashMapCoordinates.get(coordinates)+0.5);
+            if(itsAWeed){
+                // New sample icon
+                if(hashMapCoordinates.get(coordinates) <= 1.0){
+                    squareInBoard.setIcon(weedOneIcon);
+                }else if (hashMapCoordinates.get(coordinates) > 1.0 && hashMapCoordinates.get(coordinates) <= 2.0){
+                    squareInBoard.setIcon(weedTwoIcon);
+                }else{
+                    squareInBoard.setIcon(weedThreeIcon);
+                }
+            }
+        }else{
+
+            hashMapCoordinates.put(coordinates, 0.5);
+        }
+
     }
 
 
