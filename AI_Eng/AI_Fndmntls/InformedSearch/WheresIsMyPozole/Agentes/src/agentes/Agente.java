@@ -54,6 +54,9 @@ public class Agente extends Thread {
     ArrayList coordenadasMotherShip = new ArrayList<Integer>();
 
     HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
+    HashMap<ArrayList<Integer>,Double> treeCoordinates = new HashMap<ArrayList<Integer>, Double>();
+    HashMap<ArrayList<Integer>,Double> copCoordinates = new HashMap<ArrayList<Integer>, Double>();
+
 
     ArrayList coordenadasObstacle = new ArrayList<Integer>();
 
@@ -127,6 +130,7 @@ public class Agente extends Thread {
                     //Imagen de la weed:
                     this.previousSquareWasWeed = true;
                     this.bestFirstSearch();
+
                 }
                 else{
                     updatePositionInBoard();
@@ -306,8 +310,10 @@ public class Agente extends Thread {
         int sizeOfBoard = matrix.length-1;
 //        Delimitating the agent position to the board
 //        Also checking that we are not in a cop
-        while(positionYAgent + newYPosition > sizeOfBoard || positionYAgent + newXPosition < 0 || positionXAgent + newXPosition > sizeOfBoard || positionXAgent + + nextYPosition_nextXPosition.get(1) < 0 || isActualSquareACop(positionYAgent + newYPosition, positionXAgent + newXPosition ,"kk")){
+        while(positionYAgent + newYPosition > sizeOfBoard || positionYAgent + newYPosition < 0 || positionXAgent + newXPosition > sizeOfBoard || positionXAgent + newXPosition < 0 || isActualSquareACop(positionYAgent + newYPosition, positionXAgent + newXPosition)){
             nextYPosition_nextXPosition = this.randomNewPosition();
+            newYPosition = nextYPosition_nextXPosition.get(0);
+            newXPosition = nextYPosition_nextXPosition.get(1);
         }
         return nextYPosition_nextXPosition;
     }
@@ -344,7 +350,7 @@ public class Agente extends Thread {
 
     }
 
-    public synchronized boolean isActualSquareACop(int i_new, int j_new, String sensor) {
+    public synchronized boolean isActualSquareACop(int i_new, int j_new) {
         int a = 0;
         int b = 0;
         for (int recorrido = 0; recorrido < this.coordenadasObstacle.size(); recorrido++) { //Recorre todos los elementos
@@ -353,8 +359,8 @@ public class Agente extends Thread {
             //System.out.println("ACTUAL DATA " + " (i,j) =  " + i_new + "," + j_new + " "+ "  a,b "+ a + "," + b);
             recorrido = recorrido + 1;
             if (b == i_new && a == j_new) {
-                System.out.println("><<<<<<<<<<<<<<<<<<<" + sensor + "<<<<<<<<<<<<<<<<<<<<");
-                System.out.println("CORRELE GORDOOOOOOOOOO CORRELE");
+//                System.out.println("><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+//                System.out.println("CORRELE GORDOOOOOOOOOO CORRELE");
                 return true;
             }
         }
