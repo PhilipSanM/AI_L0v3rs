@@ -49,6 +49,8 @@ public class Agente extends Thread {
     boolean gotWeed = false;
     boolean previousSquareWasWeed = false;
 
+    boolean previousSquareWasNothing = true;
+
 //    Also the agent has the coordinates of all the elements in board
 
     HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
@@ -93,6 +95,7 @@ public class Agente extends Thread {
         this.previousSquareWasTree = false;
         this.gotWeed = false;
         this.previousSquareWasWeed = false;
+        this.previousSquareWasNothing = true;
 
     }
 
@@ -106,7 +109,7 @@ public class Agente extends Thread {
             previousSquareInBoard = board[positionYAgent][positionXAgent];
             
 //            Next move 
-            ArrayList<Integer> newYPosition_newXPosition = this.move2aNewPosition();
+            ArrayList<Integer> newYPosition_newXPosition = move2aNewPosition();
             int nextYPosition = newYPosition_newXPosition.get(0);
             int nextXPosition = newYPosition_newXPosition.get(1);
             positionYAgent = positionYAgent + nextYPosition;
@@ -116,23 +119,11 @@ public class Agente extends Thread {
 //          We are in a new position so lets check if we are in a weed or a tree
 //            For the animation or just we got a weed
 
-            if(isActualSquareATree()){
-                updatePositionLeavesTree();
-            }else{
-                if(isActualSquareAWeed()){
-                    updatePositionInBoard();
-//                    updatePositionWeed();
-                    //Imagen de la weed:
-                    this.previousSquareWasWeed = true;
-                    this.bestFirstSearch();
+            updatePositionInBoard();
+            if(isActualSquareAWeed()) {
 
-                }
-                else{
-                    updatePositionInBoard();
-                }
+                this.bestFirstSearch();
             }
-
-
 
         }
 
@@ -140,76 +131,62 @@ public class Agente extends Thread {
     }
 
     public synchronized void updatePositionInBoard() {
+//        System.out.println("===========================Actualiza");
+
         actualSquareInBoard = board[positionYAgent][positionXAgent];
 
-        //System.out.println("Row: " + i + " Col:"    + j);
-        if(this.previousSquareWasTree) {
-            previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
-            previousSquareInBoard.setIcon(treeIcon); // Elimina su figura de la casilla anterior
-            actualSquareInBoard.setIcon(null);
-            actualSquareInBoard.setIcon(iconAgent);
-            this.previousSquareWasTree = false;
 
-        }else if(this.previousSquareWasWeed) {
+        if(previousSquareWasTree){
+            if(gotWeed){
+//                System.out.println("TRAE MOTA PARA ACTUALIZAR");
+                previousSquareInBoard.setIcon(smokeIcon);
+
+                try{
+                    sleep(500+ random.nextInt(1));
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
+                previousSquareInBoard.setIcon(treeIcon);
+                gotWeed = false;
+
+            }else{
+                previousSquareInBoard.setIcon(treeIcon);
+            }
+            previousSquareWasTree = false;
+        }else if(previousSquareWasWeed){
+//            System.out.println("EL anterior es marihuana");
+
             if(weedCoordinates.get(auxCoordinatesWeed) <= 0.0){
-                previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
-//                casillaActual.setIcon(icon); // Pone su figura en la nueva casilla
+                previousSquareInBoard.setIcon(null);
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 1.0){
                 previousSquareInBoard.setIcon(weedOneIcon);
             }else{
                 previousSquareInBoard.setIcon(weedTwoIcon);
             }
-            this.previousSquareWasWeed = false;
-        }else{
+            previousSquareWasWeed = false;
 
-
+        } else{
             previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
-            actualSquareInBoard.setIcon(iconAgent); // Pone su figura en la nueva casilla
-
         }
-        sleep();
-
-    }
-
-    public synchronized void updatePositionLeavesTree() {
-        actualSquareInBoard = board[positionYAgent][positionXAgent];
-
-
-        previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
         actualSquareInBoard.setIcon(null);
-        if(this.gotWeed){
-            actualSquareInBoard.setIcon(smokeIcon);
-            this.gotWeed = false;
-            try
-            {
-                sleep(500+ random.nextInt(1));
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }else{
-            actualSquareInBoard.setIcon(treeIcon);
+        actualSquareInBoard.setIcon(iconAgent);
+
+
+        sleep();
+        if(isActualSquareATree()){
+            previousSquareWasTree = true;
+        }else if(isActualSquareAWeed()){
+//
+//            System.out.println("Y OTRA VEX ENCONTRASTE");
+            previousSquareWasWeed = true;
         }
-        this.previousSquareWasTree = true;
-
-        //System.out.println("Row: " + i + " Col:"    + j);
-        sleep();
 
     }
 
-    public synchronized void updatePositionWeed() {
-        actualSquareInBoard = board[positionYAgent][positionXAgent];
-
-        //System.out.println("Row: " + i + " Col:"    + j);
 
 
-        previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
-        actualSquareInBoard.setIcon(iconAgent); // Pone su figura en la nueva casilla
 
-        sleep();
-
-    }
 
     public synchronized boolean iAmInATree(ArrayList<Integer> treeCoordinates){
         int coordinateYOfTree = treeCoordinates.get(1);
@@ -222,52 +199,56 @@ public class Agente extends Thread {
 
     }
     public synchronized void bestFirstSearch(){
-        double actual_distance = 0;
-        double next_distance = 0;
-        int aux_x =0;
-        int aux_y = 0;
+        double actualDistance2Tree = 0;
+        double nextDistance2GO = 0;
+        int aux4CalculatingDistanceX =0;
+        int aux4CalculatingDistanceY = 0;
 
-        ArrayList<Integer> treeCoordinates = this.findNearestTreeCoordinates();
+        ArrayList<Integer> nearestTreeCoordinates = findNearestTreeCoordinates();
         System.out.println("=======================================: ");
-        ArrayList<Integer> dirCol_dirRow = this.move2aNewPosition();
+        ArrayList<Integer> nextYPosition_nextXPosition = move2aNewPosition();
 
 
 
-        while (!iAmInATree(treeCoordinates)){
+        while (!iAmInATree(nearestTreeCoordinates)){
+//            System.out.println("=====///////////////////////// ");
 //            System.out.println("NAVE MAS CERCA: "+ treeCoordinates);
-            aux_x = positionXAgent - treeCoordinates.get(0);
-            aux_y = positionYAgent - treeCoordinates.get(1);
-            actual_distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
-            System.out.println("Distancia: "+ actual_distance);
+            aux4CalculatingDistanceX = positionXAgent - nearestTreeCoordinates.get(0);
+            aux4CalculatingDistanceY = positionYAgent - nearestTreeCoordinates.get(1);
+            actualDistance2Tree = Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
+//            System.out.println("Distancia: "+ actualDistance2Tree);
 
             // MOVE for next
-            dirCol_dirRow = this.move2aNewPosition();
-            aux_y= positionYAgent +dirCol_dirRow.get(0)- treeCoordinates.get(1);
-            aux_x= positionXAgent +dirCol_dirRow.get(1) - treeCoordinates.get(0);
+            nextYPosition_nextXPosition = move2aNewPosition();
+            aux4CalculatingDistanceY= positionYAgent +nextYPosition_nextXPosition.get(0)- nearestTreeCoordinates.get(1);
+            aux4CalculatingDistanceX= positionXAgent +nextYPosition_nextXPosition.get(1) - nearestTreeCoordinates.get(0);
 
 
             //Add position
 
-            next_distance = Math.sqrt(Math.pow((aux_x),2) + Math.pow((aux_y),2));
-            System.out.println("Distancia Sig: "+ next_distance);
+            nextDistance2GO = Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
+//            System.out.println("Distancia Sig: "+ nextDistance2GO);
 
-            if (next_distance <= actual_distance + 0.3){
+            if (nextDistance2GO <= actualDistance2Tree + 0.3){
                 previousSquareInBoard = board[positionYAgent][positionXAgent];
-                positionYAgent = positionYAgent +dirCol_dirRow.get(0);
-                positionXAgent = positionXAgent +dirCol_dirRow.get(1);
 
+                positionYAgent = positionYAgent +nextYPosition_nextXPosition.get(0);
+                positionXAgent = positionXAgent +nextYPosition_nextXPosition.get(1);
+//                if(gotWeed){
+//                    System.out.println("TRAES MOTA EH");
+//                }
+//
+//                if(previousSquareWasWeed){
+//                    System.out.println("El anterior era weed");
+//                }
 
-                if(isActualSquareATree()){
-                    updatePositionLeavesTree();
-                }else{
+                updatePositionInBoard();
 
-                    updatePositionInBoard();
-                }
 
             }
 
         }
-        System.out.println("---------SIUUUUU----------");
+//        System.out.println("---------SIUUUUU----------");
 
 
 
@@ -282,7 +263,7 @@ public class Agente extends Thread {
         int positionY = 1;
         int positionX = 0;
 
-        System.out.println("COORDENADAS TREEE--"+ treeCoordinates);
+//        System.out.println("COORDENADAS TREEE--"+ treeCoordinates);
         for (ArrayList<Integer> treeCoordinate: treeCoordinates.keySet()) {
             int aux4CalculatingDistanceX = positionXAgent - treeCoordinate.get(positionX);
             int aux4CalculatingDistanceY = positionYAgent - treeCoordinate.get(positionY);
@@ -304,6 +285,8 @@ public class Agente extends Thread {
 
 
     public synchronized ArrayList<Integer> move2aNewPosition(){
+//        x --> 1
+//        y --> 0
 
         ArrayList<Integer> nextYPosition_nextXPosition = this.randomNewPosition();
         int newYPosition = nextYPosition_nextXPosition.get(0);
@@ -381,21 +364,24 @@ public class Agente extends Thread {
             if(weedCoordinateInHashMap.get(positionY) == positionYAgent && weedCoordinateInHashMap.get(positionX) == positionXAgent){
 //              Also checking if there is still some weed in that square
                 Double weedsLeftOver = weedCoordinates.get(weedCoordinateInHashMap);
+                this.auxCoordinatesWeed = weedCoordinateInHashMap;
 
-                if(weedsLeftOver > 0.0){
+                if(weedsLeftOver > 0.0 && !gotWeed){
 //                    Eliminating a weed in that square
                     weedCoordinates.put(weedCoordinateInHashMap, weedsLeftOver- 1.0);
 //                    System.out.println("AGARRALA GORDOOOOOOOOOOO");
 //                    System.out.println(weedCoordinates);
 
 //                    Taking the actual coordinates of the weed
-                    this.auxCoordinatesWeed = weedCoordinateInHashMap;
+
 //                    So you have one weed in your hands
                     this.gotWeed = true;
-                    return true;
+                    previousSquareWasWeed = true;
+
                 }else{
                     System.out.println("Shit theres is no more weed here");
                 }
+                return true;
             }
         }
         return false;

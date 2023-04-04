@@ -16,12 +16,12 @@ import javax.swing.JPanel;
 public class BackGroundPanel extends JPanel
 {
     
-    ImageIcon fondo;
+    ImageIcon backGround;
     
-    public BackGroundPanel(ImageIcon fondo)
+    public BackGroundPanel(ImageIcon backGround)
     {
         super();
-        this.fondo = fondo;
+        this.backGround = backGround;
         repaint();
     }
     
@@ -31,7 +31,7 @@ public class BackGroundPanel extends JPanel
         Dimension dim = this.getSize();
         int ancho = (int) dim.getWidth();
         int alto  = (int) dim.getHeight();
-        g.drawImage(fondo.getImage(), 0, 0, ancho, alto, null);
+        g.drawImage(backGround.getImage(), 0, 0, ancho, alto, null);
         setOpaque(false);
         super.paintComponent(g);
     }
