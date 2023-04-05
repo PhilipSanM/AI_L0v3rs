@@ -122,7 +122,7 @@ public class Agente extends Thread {
             updatePositionInBoard();
             if(isActualSquareAWeed()) {
 
-                this.bestFirstSearch();
+                this.a_StarSearch();
             }
 
         }
@@ -161,8 +161,10 @@ public class Agente extends Thread {
                 previousSquareInBoard.setIcon(null);
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 1.0){
                 previousSquareInBoard.setIcon(weedOneIcon);
-            }else{
+            }else if(weedCoordinates.get(auxCoordinatesWeed) <= 2.0){
                 previousSquareInBoard.setIcon(weedTwoIcon);
+            }else{
+                previousSquareInBoard.setIcon(weedThreeIcon);
             }
             previousSquareWasWeed = false;
 
@@ -198,6 +200,7 @@ public class Agente extends Thread {
         }
 
     }
+
     public synchronized void bestFirstSearch(){
         double actualDistance2Tree = 0;
         double nextDistance2GO = 0;
@@ -249,8 +252,6 @@ public class Agente extends Thread {
 
         }
 //        System.out.println("---------SIUUUUU----------");
-
-
 
     }
     public synchronized ArrayList<Integer> findNearestTreeCoordinates(){
@@ -408,6 +409,56 @@ public class Agente extends Thread {
         }
 
 
+    }
+
+    public synchronized void a_StarSearch(){
+        double actualDistance2Tree = 0;
+        double totalDistanceTraveled = 0;
+        double nextDistance2GO = 0;
+        int nextCoordinateX2Go = 0;
+        int nextCoordinateY2Go = 0;
+
+        ArrayList<Integer> nearestTreeCoordinates = findNearestTreeCoordinates();
+
+        ArrayList<Integer> nextYPosition_nextXPosition;
+
+
+
+        while (!iAmInATree(nearestTreeCoordinates)){
+
+
+            actualDistance2Tree = calculateDistance2Tree(nearestTreeCoordinates, positionXAgent, positionYAgent);
+
+
+            // MOVE for next
+            nextYPosition_nextXPosition = move2aNewPosition();
+            nextCoordinateY2Go = positionYAgent +nextYPosition_nextXPosition.get(0);
+            nextCoordinateX2Go = positionXAgent +nextYPosition_nextXPosition.get(1);
+
+            nextDistance2GO = calculateDistance2Tree(nearestTreeCoordinates, nextCoordinateX2Go, nextCoordinateY2Go);
+//            System.out.println("Distancia Sig: "+ nextDistance2GO);
+
+            if (nextDistance2GO <= actualDistance2Tree + 0.2){
+                double distanceTraveled = Math.abs(actualDistance2Tree - nextDistance2GO);
+                totalDistanceTraveled = totalDistanceTraveled + distanceTraveled;
+                previousSquareInBoard = board[positionYAgent][positionXAgent];
+                positionYAgent = positionYAgent +nextYPosition_nextXPosition.get(0);
+                positionXAgent = positionXAgent +nextYPosition_nextXPosition.get(1);
+                updatePositionInBoard();
+
+
+            }
+
+        }
+//        System.out.println("---------SIUUUUU----------");
+
+    }
+    public synchronized double calculateDistance2Tree(ArrayList<Integer> nearestTreeCoordinates, int positionXAgent, int positionYAgent){
+        int aux4CalculatingDistanceX =0;
+        int aux4CalculatingDistanceY = 0;
+        aux4CalculatingDistanceX = positionXAgent - nearestTreeCoordinates.get(0);
+        aux4CalculatingDistanceY = positionYAgent - nearestTreeCoordinates.get(1);
+        return Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
     }
     
     
