@@ -8,8 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.lang.Math;
 
 
@@ -38,9 +37,11 @@ public class Agente extends Thread {
 //    ICONS USED WHEN INTERACT WITH THE BOARD
     ImageIcon treeIcon;
     ImageIcon smokeIcon;
+
     ImageIcon weedTwoIcon;
     ImageIcon weedOneIcon;
     ImageIcon weedThreeIcon;
+    ImageIcon crumbsIcon;
 
 
 // also flags whitn interacting with board
@@ -51,18 +52,23 @@ public class Agente extends Thread {
 
     boolean previousSquareWasNothing = true;
 
+    boolean isThereStillWeed = false;
+
+
+
 //    Also the agent has the coordinates of all the elements in board
 
     HashMap<ArrayList<Integer>,Double> weedCoordinates = new HashMap<ArrayList<Integer>, Double>();
     HashMap<ArrayList<Integer>,Double> treeCoordinates = new HashMap<ArrayList<Integer>, Double>();
     HashMap<ArrayList<Integer>,Double> copCoordinates = new HashMap<ArrayList<Integer>, Double>();
+    HashMap<ArrayList<Integer>,Double> crumbCoordinates = new HashMap<ArrayList<Integer>, Double>();
 
     ArrayList auxCoordinatesWeed = new ArrayList<Integer>();
 
 
 
     
-    public Agente(String nameAgent, ImageIcon iconAgent, int[][] matrix, JLabel board[][],HashMap<ArrayList<Integer>,Double> treeCoordinates, HashMap<ArrayList<Integer>,Double> weedCoordinates, HashMap<ArrayList<Integer>,Double> copCoordinates) {
+    public Agente(String nameAgent, ImageIcon iconAgent, int[][] matrix, JLabel board[][],HashMap<ArrayList<Integer>,Double> treeCoordinates, HashMap<ArrayList<Integer>,Double> weedCoordinates, HashMap<ArrayList<Integer>,Double> copCoordinates, HashMap<ArrayList<Integer>,Double> crumbCoordinates) {
         //  THIS PART REFERS TO AN AGENT PROPRIETIES
         this.nameAgent = nameAgent;
         this.iconAgent = iconAgent;
@@ -71,6 +77,8 @@ public class Agente extends Thread {
         this.treeCoordinates = treeCoordinates;
         this.copCoordinates = copCoordinates;
         this.weedCoordinates = weedCoordinates;
+        this.crumbCoordinates = crumbCoordinates;
+
 
         //  THIS PART REFERS TO THE POSITION IN BOARD
         this.positionYAgent = random.nextInt(matrix.length);
@@ -91,11 +99,15 @@ public class Agente extends Thread {
         weedThreeIcon = new ImageIcon("imagenes/3plantas.png");
         weedThreeIcon = new ImageIcon(weedThreeIcon.getImage().getScaledInstance(50,50,  Image.SCALE_SMOOTH));
 
+        crumbsIcon = new ImageIcon("imagenes/migas.png");
+        crumbsIcon = new ImageIcon(crumbsIcon.getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH));
+
 //        FLAGS FOR TREE, COP AND GOT WEED
         this.previousSquareWasTree = false;
         this.gotWeed = false;
         this.previousSquareWasWeed = false;
         this.previousSquareWasNothing = true;
+        this.isThereStillWeed = false;
 
     }
 
@@ -122,7 +134,7 @@ public class Agente extends Thread {
             updatePositionInBoard();
             if(isActualSquareAWeed()) {
 
-                this.a_StarSearch();
+                this.bestFirstSearch();
             }
 
         }
@@ -134,6 +146,11 @@ public class Agente extends Thread {
 //        System.out.println("===========================Actualiza");
 
         actualSquareInBoard = board[positionYAgent][positionXAgent];
+
+        ArrayList coordinatesOfObject = new ArrayList<Integer>();
+
+        coordinatesOfObject.add(positionXAgent);
+        coordinatesOfObject.add(positionYAgent);
 
 
         if(previousSquareWasTree){
@@ -153,26 +170,38 @@ public class Agente extends Thread {
             }else{
                 previousSquareInBoard.setIcon(treeIcon);
             }
+
+
             previousSquareWasTree = false;
         }else if(previousSquareWasWeed){
 //            System.out.println("EL anterior es marihuana");
 
             if(weedCoordinates.get(auxCoordinatesWeed) <= 0.0){
                 previousSquareInBoard.setIcon(null);
+                isThereStillWeed = false;
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 1.0){
                 previousSquareInBoard.setIcon(weedOneIcon);
+                isThereStillWeed = false;
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 2.0){
                 previousSquareInBoard.setIcon(weedTwoIcon);
+
+                isThereStillWeed = true;
             }else{
                 previousSquareInBoard.setIcon(weedThreeIcon);
+                isThereStillWeed = true;
             }
             previousSquareWasWeed = false;
-
-        } else{
+        } else if(gotWeed){
+            System.out.println("HASH MAP COOORDINATES ");
+            addingElementToHashMap(crumbCoordinates,coordinatesOfObject);
+            System.out.println(crumbCoordinates);
+            previousSquareInBoard.setIcon(crumbsIcon);
+        }else{
             previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
         }
         actualSquareInBoard.setIcon(null);
         actualSquareInBoard.setIcon(iconAgent);
+
 
 
         sleep();
@@ -401,7 +430,7 @@ public class Agente extends Thread {
     public synchronized void sleep(){
         try
         {
-            sleep(100+ random.nextInt(1));
+            sleep(1900+ random.nextInt(1));
         }
         catch (Exception ex)
         {
@@ -460,6 +489,41 @@ public class Agente extends Thread {
         aux4CalculatingDistanceY = positionYAgent - nearestTreeCoordinates.get(1);
         return Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
     }
-    
-    
+
+    public synchronized boolean areThereNearCrumbs (){
+        JLabel northSquareInBoard =  board[positionYAgent + 1][positionXAgent];
+        JLabel southSquareInBoard =  board[positionYAgent - 1][positionXAgent];
+        JLabel eastSquareInBoard =  board[positionYAgent][positionXAgent + 1];
+        JLabel westSquareInBoard =  board[positionYAgent][positionXAgent - 1];
+        Icon iconOFSquare;
+
+
+
+
+
+
+
+
+
+        return false;
+    }
+
+    private void addingElementToHashMap(HashMap<ArrayList<Integer>, Double> hashMapCoordinates, ArrayList<Integer> coordinates){
+
+        if(checkIfItIsAlreadyInHashMap(hashMapCoordinates, coordinates)){
+            hashMapCoordinates.put(coordinates, hashMapCoordinates.get(coordinates)+0.5);
+        }else{
+
+            hashMapCoordinates.put(coordinates, 0.5);
+        }
+
+    }
+    private boolean checkIfItIsAlreadyInHashMap(HashMap<ArrayList<Integer>, Double> hashMapCoordinates, ArrayList<Integer> coordinates){
+        for (ArrayList<Integer> coordinatesInHashMap: hashMapCoordinates.keySet()) {
+            if(coordinatesInHashMap.get(0) == coordinates.get(0) && coordinatesInHashMap.get(1) == coordinates.get(1)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

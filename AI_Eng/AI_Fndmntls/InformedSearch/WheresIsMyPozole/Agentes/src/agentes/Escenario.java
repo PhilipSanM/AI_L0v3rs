@@ -53,6 +53,8 @@ public class Escenario extends JFrame
     HashMap<ArrayList<Integer>,Double> treeCoordinates = new HashMap<ArrayList<Integer>, Double>();
     HashMap<ArrayList<Integer>,Double> copCoordinates = new HashMap<ArrayList<Integer>, Double>();
 
+    HashMap<ArrayList<Integer>,Double> crumbCoordinates = new HashMap<ArrayList<Integer>, Double>();
+
     private final BackGroundPanel backGroundPanel = new BackGroundPanel(new ImageIcon("imagenes/scene.png"));
     private final JMenu settings = new JMenu("Settings"); //Parte 1 del menu
     private final JRadioButtonMenuItem copMenuItem = new JRadioButtonMenuItem("Cop");
@@ -136,8 +138,8 @@ public class Escenario extends JFrame
         addWindowListener(new MyWindowAdapter());
         
 
-        brandom = new Agente("Brandom", brandomIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates);
-        emi = new Agente("Emi", emiIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates);
+        brandom = new Agente("Brandom", brandomIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates, crumbCoordinates);
+        emi = new Agente("Emi", emiIcon, matrix, board, treeCoordinates, weedCoordinates, copCoordinates, crumbCoordinates);
 
 
         
