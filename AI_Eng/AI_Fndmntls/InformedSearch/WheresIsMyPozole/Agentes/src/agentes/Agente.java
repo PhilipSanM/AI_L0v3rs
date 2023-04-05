@@ -54,6 +54,8 @@ public class Agente extends Thread {
 
     boolean isThereStillWeed = false;
 
+    boolean back2Weed = false;
+
 
 
 //    Also the agent has the coordinates of all the elements in board
@@ -153,6 +155,14 @@ public class Agente extends Thread {
         coordinatesOfObject.add(positionYAgent);
 
 
+        if(gotWeed && isThereStillWeed && !previousSquareWasWeed) {
+            System.out.println("HASH MAP COOORDINATES ");
+            addingElementToHashMap(crumbCoordinates, coordinatesOfObject);
+            System.out.println(crumbCoordinates);
+            previousSquareInBoard.setIcon(crumbsIcon);
+
+        }
+
         if(previousSquareWasTree){
             if(gotWeed){
 //                System.out.println("TRAE MOTA PARA ACTUALIZAR");
@@ -167,6 +177,10 @@ public class Agente extends Thread {
                 previousSquareInBoard.setIcon(treeIcon);
                 gotWeed = false;
 
+                if(isThereStillWeed){
+                    back2Weed = true;
+                }
+
             }else{
                 previousSquareInBoard.setIcon(treeIcon);
             }
@@ -175,13 +189,15 @@ public class Agente extends Thread {
             previousSquareWasTree = false;
         }else if(previousSquareWasWeed){
 //            System.out.println("EL anterior es marihuana");
+            System.out.println("HASH MAP COOORDINATES ");
+            addingElementToHashMap(crumbCoordinates, coordinatesOfObject);
 
             if(weedCoordinates.get(auxCoordinatesWeed) <= 0.0){
                 previousSquareInBoard.setIcon(null);
                 isThereStillWeed = false;
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 1.0){
                 previousSquareInBoard.setIcon(weedOneIcon);
-                isThereStillWeed = false;
+                isThereStillWeed = true;
             }else if(weedCoordinates.get(auxCoordinatesWeed) <= 2.0){
                 previousSquareInBoard.setIcon(weedTwoIcon);
 
@@ -191,16 +207,17 @@ public class Agente extends Thread {
                 isThereStillWeed = true;
             }
             previousSquareWasWeed = false;
-        } else if(gotWeed){
-            System.out.println("HASH MAP COOORDINATES ");
-            addingElementToHashMap(crumbCoordinates,coordinatesOfObject);
-            System.out.println(crumbCoordinates);
-            previousSquareInBoard.setIcon(crumbsIcon);
         }else{
-            previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+            if(gotWeed && isThereStillWeed){
+                previousSquareInBoard.setIcon(crumbsIcon);
+
+            }else{
+                previousSquareInBoard.setIcon(null); // Elimina su figura de la casilla anterior
+            }
         }
         actualSquareInBoard.setIcon(null);
         actualSquareInBoard.setIcon(iconAgent);
+
 
 
 
@@ -261,7 +278,7 @@ public class Agente extends Thread {
             nextDistance2GO = Math.sqrt(Math.pow((aux4CalculatingDistanceX),2) + Math.pow((aux4CalculatingDistanceY),2));
 //            System.out.println("Distancia Sig: "+ nextDistance2GO);
 
-            if (nextDistance2GO <= actualDistance2Tree + 0.3){
+            if (nextDistance2GO <= actualDistance2Tree + 0.1){
                 previousSquareInBoard = board[positionYAgent][positionXAgent];
 
                 positionYAgent = positionYAgent +nextYPosition_nextXPosition.get(0);
@@ -326,17 +343,37 @@ public class Agente extends Thread {
 //        Also checking that we are not in a cop
         int nextXPosition = positionXAgent + newXPosition;
         int nextYPosition = positionYAgent + newYPosition;
-        while(nextYPosition > sizeOfBoard || nextYPosition < 0 || nextXPosition > sizeOfBoard || nextXPosition < 0 || isNextSquareACop(nextYPosition, nextXPosition)){
+
+        if(back2Weed){
+            while(nextYPosition > sizeOfBoard || nextYPosition < 0 || nextXPosition > sizeOfBoard || nextXPosition < 0 || isNextSquareACop(nextYPosition, nextXPosition) || !isNextSquareACrumb(nextYPosition, nextXPosition)){
 
 //            Finding new positions to X and Y
-            nextYPosition_nextXPosition = this.randomNewPosition();
-            newYPosition = nextYPosition_nextXPosition.get(0);
-            newXPosition = nextYPosition_nextXPosition.get(1);
+                nextYPosition_nextXPosition = this.randomNewPosition();
+                newYPosition = nextYPosition_nextXPosition.get(0);
+                newXPosition = nextYPosition_nextXPosition.get(1);
 
 //            Adding those position to think about the next position
-            nextXPosition = positionXAgent + newXPosition;
-            nextYPosition = positionYAgent + newYPosition;
+                nextXPosition = positionXAgent + newXPosition;
+                nextYPosition = positionYAgent + newYPosition;
+
+            }
+
+        }else{
+
+            while(nextYPosition > sizeOfBoard || nextYPosition < 0 || nextXPosition > sizeOfBoard || nextXPosition < 0 || isNextSquareACop(nextYPosition, nextXPosition)){
+
+//            Finding new positions to X and Y
+                nextYPosition_nextXPosition = this.randomNewPosition();
+                newYPosition = nextYPosition_nextXPosition.get(0);
+                newXPosition = nextYPosition_nextXPosition.get(1);
+
+//            Adding those position to think about the next position
+                nextXPosition = positionXAgent + newXPosition;
+                nextYPosition = positionYAgent + newYPosition;
+
+            }
         }
+
         return nextYPosition_nextXPosition;
     }
 
@@ -430,7 +467,7 @@ public class Agente extends Thread {
     public synchronized void sleep(){
         try
         {
-            sleep(1900+ random.nextInt(1));
+            sleep(100+ random.nextInt(1));
         }
         catch (Exception ex)
         {
@@ -526,4 +563,17 @@ public class Agente extends Thread {
         }
         return false;
     }
+
+    public synchronized boolean isNextSquareACrumb(int nextYPosition, int nextXPosition) {
+        int positionY = 1;
+        int positionX = 0;
+        for (ArrayList<Integer> crumbCoordinate: crumbCoordinates.keySet()) {
+            if(crumbCoordinate.get(positionY) == nextYPosition && crumbCoordinate.get(positionX) == nextXPosition){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

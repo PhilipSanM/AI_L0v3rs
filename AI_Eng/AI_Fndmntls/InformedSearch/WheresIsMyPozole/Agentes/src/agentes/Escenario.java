@@ -246,6 +246,7 @@ public class Escenario extends JFrame
         if(actualIcon == treeIcon){
 //            System.out.println("has puesto un spot");
             addingElementToHashMap(treeCoordinates,coordinatesOfObject,squareInBoard,false);
+            System.out.println(treeCoordinates);
 
         }
 
