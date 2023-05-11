@@ -1,0 +1,2 @@
+Esta línea será escrita en sel archivo de salida.
+{}
