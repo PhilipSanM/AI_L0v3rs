@@ -1,7 +1,6 @@
 # Constanst
 IMAGE_URL = "fabio_gray_256" 
 
-
 # libs
 using TestImages, Images, ImageView, Plots
 
@@ -68,16 +67,16 @@ function main()
     while true
         message()
         img = loadImage()
-        imshow(img)
+        display(img)
         # Mostrar la imagen en el Plot Pane
         # plot(img, aspect_ratio=:equal, axis=:off)
     
         saltAndPepperImg = saltAndPepperNoise(img)
         # plot(saltAndPepperImg, aspect_ratio=:equal, axis=:off)
-        imshow(saltAndPepperImg)
+        display(saltAndPepperImg)
         cleanImg = smoothingImg(saltAndPepperImg) 
         # plot(cleanImg, aspect_ratio=:equal, axis=:off)
-        imshow(cleanImg) 
+        display(cleanImg) 
 
 
         println("\n########################################")
