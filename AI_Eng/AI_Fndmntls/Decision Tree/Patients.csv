@@ -1,0 +1,15 @@
+Patient,Age,Gender,BloodPressure,Cholesterol,Medication
+p1,Young,F,High,Normal,A
+p2,Young,F,High,High,A
+p3,Middle-Aged,F,High,Normal,B
+p4,Elderly,F,Normal,Normal,B
+p5,Elderly,M,Low,Normal,B
+p6,Elderly,M,Low,High,A
+p7,Middle-Aged,M,Low,High,B
+p8,Young,F,Normal,Normal,A
+p9,Young,M,Low,Normal,B
+p10,Elderly,M,Normal,Normal,B
+p11,Young,M,Normal,High,B
+p12,Middle-Aged,F,Normal,High,B
+p13,Middle-Aged,M,High,Normal,B
+p14,Elderly,F,Normal,High,B
