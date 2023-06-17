@@ -97,7 +97,11 @@ function obtainMode(arrayOfPixels)
     if max == 1 # Case 1
         # println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         # Defining limits 
-        group_limits = [0.0N0f8, 0.1N0f8, 0.2N0f8, 0.3N0f8, 0.4N0f8, 0.5N0f8, 0.6N0f8, 0.7N0f8, 0.8N0f8, 0.9N0f8, 1.0N0f8]
+        # group_limits = [0.0N0f8, 0.1N0f8, 0.2N0f8, 0.3N0f8, 0.4N0f8, 0.5N0f8, 0.6N0f8, 0.7N0f8, 0.8N0f8, 0.9N0f8, 1.0N0f8]
+        group_limits = [0.0N0f8, 0.2N0f8, 0.4N0f8,  0.6N0f8,  0.8N0f8,  1.0N0f8]
+
+
+
         # Initializing dictionary for group modes
         modesOfGroups = Dict{N0f8, Int}()
 
