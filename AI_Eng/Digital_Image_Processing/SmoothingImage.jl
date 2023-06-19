@@ -1,8 +1,8 @@
 # Constanst
-IMAGE_URL = "mandrill" 
+IMAGE_URL = "fabio" 
 
 # libs
-using TestImages, Images, FixedPointNumbers, Plots
+using TestImages, Images, FixedPointNumbers, Plots, StatsBase
 
 function message()
     println("==============================================")
@@ -55,17 +55,21 @@ function smoothingImg(saltAndPepperImg)
     cleanImg = copy(saltAndPepperImg)
     for x in axes(cleanImg, 1)
         for y in axes(cleanImg, 2)
-            arrayOfPixels = []
-            for i in -1:1
-                for j in -1:1
-                    if x + i in axes(cleanImg, 1) && y + j in axes(cleanImg, 2)
-                        push!(arrayOfPixels, saltAndPepperImg[x + i, y + j])
+            # Skipping saltAndPepperImg pixels
+            if saltAndPepperImg[x, y] == N0f8(0) || saltAndPepperImg[x, y] == N0f8(1)
+                arrayOfPixels = []
+                for i in -1:1
+                    for j in -1:1
+                        if x + i in axes(cleanImg, 1) && y + j in axes(cleanImg, 2)
+                            push!(arrayOfPixels, saltAndPepperImg[x + i, y + j])
+                        end
                     end
                 end
+                arrayOfPixels = sort(arrayOfPixels)
+                mid = round(Int64, length(arrayOfPixels)/2)
+                cleanImg[x, y] = arrayOfPixels[mid]
             end
-            arrayOfPixels = sort(arrayOfPixels)
-            mid = round(Int64, length(arrayOfPixels)/2)
-            cleanImg[x, y] = arrayOfPixels[mid]
+
         end
     end
     
@@ -146,6 +150,9 @@ function obtainMode(arrayOfPixels)
                 break
             end
         end
+        # println("limit: ", limit)
+        # println("max: ", max)
+        # println("mode: ", mode)
         # println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     end
 
@@ -160,18 +167,23 @@ function modeSmoothingImg(saltAndPepperImg)
     cleanImg = copy(saltAndPepperImg)
     for x in axes(cleanImg, 1)
         for y in axes(cleanImg, 2)
-            arrayOfPixels = []
-            for i in -1:1
-                for j in -1:1
-                    if x + i in axes(cleanImg, 1) && y + j in axes(cleanImg, 2)
-                        push!(arrayOfPixels, saltAndPepperImg[x + i, y + j])
+            # Skipping the salt and pepper pixels
+            if saltAndPepperImg[x, y] == 0.0N0f8 || saltAndPepperImg[x, y] == 1.0N0f8
+                arrayOfPixels = []
+                for i in -1:1
+                    for j in -1:1
+                        if x + i in axes(cleanImg, 1) && y + j in axes(cleanImg, 2)
+                            push!(arrayOfPixels, saltAndPepperImg[x + i, y + j])
+                        end
                     end
                 end
+                
+                arrayOfPixels = sort(arrayOfPixels)
+                # moda = obtainMode(arrayOfPixels)
+                moda = mode(arrayOfPixels)
+                cleanImg[x, y] = moda
             end
-            
-            arrayOfPixels = sort(arrayOfPixels)
-            mode = obtainMode(arrayOfPixels)
-            cleanImg[x, y] = mode
+        
         end
     end
     
@@ -200,6 +212,10 @@ function main()
         end 
 
         modeCleanImg = modeSmoothingImg(saltAndPepperImg)
+
+        for i in 1:4
+            modeCleanImg = modeSmoothingImg(modeCleanImg)
+        end 
 
         # dis = mosaicview(img,saltAndPepperImg,cleanImg)
         # display(dis)
