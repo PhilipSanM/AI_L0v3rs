@@ -179,9 +179,10 @@ function modeSmoothingImg(saltAndPepperImg)
                 end
                 
                 arrayOfPixels = sort(arrayOfPixels)
-                # moda = obtainMode(arrayOfPixels)
+                modu = obtainMode(arrayOfPixels)
                 moda = mode(arrayOfPixels)
-                cleanImg[x, y] = moda
+
+                cleanImg[x, y] = modu
             end
         
         end
