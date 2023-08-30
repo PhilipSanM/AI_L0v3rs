@@ -141,7 +141,7 @@ function createGui()
 
     
     loadImageMenu = GtkComboBoxText()
-    choices = ["desert.jpg", "forest.jpg", "mountain.jpg", "beach.jpg"]
+    choices = ["desert", "forest", "mountain","mountain2", "beach", "ocean", "beach2", "snowforest"]
     for choice in choices
         push!(loadImageMenu,choice)
     end
@@ -180,9 +180,11 @@ function createGui()
     function startHandler(button)
         str = Gtk.bytestring( GAccessor.active_text(loadImageMenu) )
         println("poniendo la foto del: \"$str\"" )
-        img_path = abspath(".//AI_Eng//Digital_Image_Processing//Image Analyzer//Images//$str")
+        img_path = abspath(".//AI_Eng//Digital_Image_Processing//Image Analyzer//Images//$str.jpg")
         new_img = GtkImageLeaf(img_path)
-
+        # destroy(grid[1, 1])
+        # grid[1, 1] = new_img
+        # Gtk.showall(gui)
     
         function procesarImagen(img::Matrix, numberSeeds::Int)
             n, m = size(img)
@@ -290,6 +292,13 @@ function createGui()
         # We need to wrap the GAccessor call into a Gtk bytestring
         str = Gtk.bytestring( GAccessor.active_text(loadImageMenu) )
         println("Active element is \"$str\" at index $idx")
+        str = Gtk.bytestring( GAccessor.active_text(loadImageMenu) )
+        println("poniendo la foto del: \"$str\"" )
+        img_path = abspath(".//AI_Eng//Digital_Image_Processing//Image Analyzer//Images//$str.jpg")
+        new_img = GtkImageLeaf(img_path)
+        destroy(grid[1, 1])
+        grid[1, 1] = new_img
+        Gtk.showall(gui)
     end
 
     # Connectors
