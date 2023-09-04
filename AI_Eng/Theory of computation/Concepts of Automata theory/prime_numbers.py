@@ -10,40 +10,6 @@ sys.stdout = open('outputf.txt','w')
 # Code goes here
 # ========================================
 
-
-if h == '':
-    exit()
-    n = random.randint(0, 1000)
-
-print("{0, 1}", end ='')
-print(f"^{k_length} = ", end = '')
-print("{empty, ", end = '')
-
-
-# Logic
-number_zeros_left = 0
-
-for i in range(1, k_length + 1):
-    number_zeros_left += 1
-    bits = 2**i
-    for j in range(bits):
-        if i == k_length and j == bits - 1:
-            print(bin(j)[2::].zfill(number_zeros_left), end = '')
-        else:
-            print(bin(j)[2::].zfill(number_zeros_left), end = ', ')
-        
-    
-print('}')
-
-
-"""
- n
-
-
-""" 
-
-
-
 # GRAPH
 import pandas as pd
 import matplotlib.pyplot as plt
