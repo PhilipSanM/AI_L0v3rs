@@ -36,6 +36,10 @@ for i in range(1, k_length + 1):
 print('}')
 
 
+# ========================================
+# Closing files
+sys.stdout.close()
+
 """
  k =3
 
@@ -72,9 +76,26 @@ chain        number_of_1s
 chain = [1]   # empty = epsilon
 number_of_1s = [0] # 0 
 
+
+
+
+def hammingWeight(n):
+    """
+    :type n: int
+    :rtype: int
+    """
+    mask = 1
+    count = 0
+    while n != 0:
+        if (mask & n == 1):
+            count = count + 1
+        n = n>>1
+
+    return count
+
 for i in range(2, bits + 2):
     chain.append(i)
-    number_of_1s.append(bin(i - 2).count('1'))
+    number_of_1s.append(hammingWeight(i - 2))
 
 df = pd.DataFrame({'chain': chain, 'number_of_1s': number_of_1s})
 
@@ -93,6 +114,3 @@ plt.show()
 
 
 
-# ========================================
-# Closing files
-sys.stdout.close()
