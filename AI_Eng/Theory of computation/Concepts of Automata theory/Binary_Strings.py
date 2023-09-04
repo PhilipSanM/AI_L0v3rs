@@ -21,72 +21,74 @@ print("{empty, ", end = '')
 
 
 # Logic
+number_zeros_left = 0
 
-alphabet = ['0', '1']
-
-cache = deque()
-times = 1
-
-
-
-for size in range(k_length):
-    cache += cache
-
-    if len(cache) == 0:
-        for letter in alphabet:
-            cache.append(letter)
-    else:
-        # print('inicio', cache)
-        for letter in alphabet:
-            for _ in range(times):
-                combination = cache.popleft()
-                new_combination = letter + combination
-                # print(new_combination)
-                # print(cache)
-                cache.append(new_combination)
-
-    
-    # printing:
-    for combination in cache:
-        if combination == cache[-1] and size == k_length -1:
-            print(f"{combination}", end = '')
+for i in range(1, k_length + 1):
+    number_zeros_left += 1
+    bits = 2**i
+    for j in range(bits):
+        if i == k_length and j == bits - 1:
+            print(bin(j)[2::].zfill(number_zeros_left), end = '')
         else:
-            print(f"{combination}, ", end = '')
-
-
-    times *= 2
-
+            print(bin(j)[2::].zfill(number_zeros_left), end = ', ')
+        
+    
 print('}')
 
 
 """
  k =3
 
-cache =    0
-           1
-         1.- repeat values
-         2.- add 0 and 1 to the beginin, also having a value of times * 2
-         3.- print cache
-cache  =     00
-             01    
-             10
-             11
-             
+output :  {e, 0, 1, 00, 01, 10, 11, 000, 001, 010, 011, 100, 101, 110, 111}   
 
-cache  =     000
-             001
-             010
-             011
+T: O(2^k + 2^k-1 + 2^k-2 + ... + 2^1 + 2^0) = O(2^k) 
+O: O(1)   only output.txt
 
-             100
-             101
-             110
-             111
-
-"""     
+""" 
 
 
 
+# GRAPH
+import pandas as pd
+import matplotlib.pyplot as plt
+'''
+  Data frame:
+# k = 3
+# bits = 2**3
+bits = 8
+chain        number_of_1s
+ 1              0         -> epsilon   
+ 2              0         -> '000'
+ 3              1         -> '001'
+ 4              1         -> '010'
+ 5              2         -> '011'
+ 6              1         -> '100'
+ 7              2         -> '101'
+ 8              2         -> '110'
+ 9              3         -> '111'
+
+'''
+
+chain = [1]   # empty = epsilon
+number_of_1s = [0] # 0 
+
+for i in range(2, bits + 2):
+    chain.append(i)
+    number_of_1s.append(bin(i - 2).count('1'))
+
+df = pd.DataFrame({'chain': chain, 'number_of_1s': number_of_1s})
+
+# save to csv file
+df.to_csv('Binary_Strings.csv', index = False)
+
+
+# Plotting
+# only dots and integers
+plt.plot(df['chain'], df['number_of_1s'], 'bo')
+plt.title('Binary Strings')
+plt.xlabel('Chain')
+plt.ylabel('Number of 1s')
+plt.show()
 
 
 
