@@ -23,8 +23,7 @@ def longestCommonSubstring(s, t, n, m):
 def longestCommonSubsequence(s: str, t: str) -> int:
     prev=[0 for i in range(len(t)+1)] 
     curr=[0 for i in range(len(t)+1)]
-    
-    
+
     for i in range(1,len(s)+1):
         for j in range(1,len(t)+1):
 
