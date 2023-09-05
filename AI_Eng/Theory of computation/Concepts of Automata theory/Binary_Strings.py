@@ -73,12 +73,6 @@ chain        number_of_1s
 
 '''
 
-chain = [1]   # empty = epsilon
-number_of_1s = [0] # 0 
-
-
-
-
 def hammingWeight(n):
     """
     :type n: int
@@ -93,11 +87,14 @@ def hammingWeight(n):
 
     return count
 
-for i in range(2, bits + 2):
-    chain.append(i)
-    number_of_1s.append(hammingWeight(i - 2))
+chain = [1]   # empty = epsilon
+number_of_1s = [0] # 0 
 
 df = pd.DataFrame({'chain': chain, 'number_of_1s': number_of_1s})
+
+for i in range(2, bits + 2):
+    new_row = {'chain': i, 'number_of_1s': hammingWeight(i - 2)}
+    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
 # save to csv file
 df.to_csv('Binary_Strings.csv', index = False)
