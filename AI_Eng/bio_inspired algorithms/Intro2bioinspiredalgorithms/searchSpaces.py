@@ -54,7 +54,7 @@ def main(args):
         b = 6
         exhaustiveSearch(a, b, iteration, f6)
         print("")
-        
+
     print("="*20)
     print("/"*20)
     print("="*20)
@@ -76,8 +76,8 @@ def main(args):
 
     print("Running interval search for function 3:")
     for eps in args.eps:
-        a = -1
-        b = 1
+        a = -.90
+        b = 1.0
         intervalSearch(a, b, eps, f3)
         print("")
     print("="*20)
@@ -173,21 +173,21 @@ def intervalSearch(a, b, eps, fun):
     fun(xm)
     iteraciones = 0
     while True:
-    iteraciones = iteraciones + 1
-    x1 = a + L/4
-    x2 = b - L/4
-    if fun(x1) < fun(xm):
-        b = xm
-        xm = x1
-    elif fun(x2) < fun(xm):
-        a = xm
-        xm = x2
-    else:
-        a = x1
-        b = x2
-    L = b-a
-    if abs(L) < eps:
-        break
+        iteraciones = iteraciones + 1
+        x1 = a + L/4
+        x2 = b - L/4
+        if fun(x1) < fun(xm):
+            b = xm
+            xm = x1
+        elif fun(x2) < fun(xm):
+            a = xm
+            xm = x2
+        else:
+            a = x1
+            b = x2
+        L = b-a
+        if abs(L) < eps:
+            break
     print('The optimal value is betwen', a, b)
     print("Number of iterations", iteraciones)
 
