@@ -1,4 +1,4 @@
-
+import time
 #funciones de prueba
 from numpy import *
 from math import *
@@ -215,12 +215,18 @@ if __name__ == "__main__":
     # add space in logs
     print("\n\n")
     print("*" * 60)
+    start = time.time()
+
 
     # parse args
     args = parse_args()
 
     # run main function
     main(args)
+
+    end = time.time()
+
+    print("Total time taken: {}s (Wall time)".format(end - start))
 
     # add space in logs
     print("*" * 60)
