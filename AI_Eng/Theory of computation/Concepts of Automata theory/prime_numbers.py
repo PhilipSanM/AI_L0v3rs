@@ -1,23 +1,60 @@
-import random, sys
-from collections import deque
-#Input
-n = int(input("Pls give me the max number to check prime numbers or just press 'enter': "))
-
-
-
-# Output file
-sys.stdout = open('outputf.txt','w')
-
-
-if n == '':
-    exit()
-    n = random.randint(0, 10000)
-
-print("{", end = '')
-
-# Code goes here
-# ========================================
+import random
+import time
 from math import sqrt
+# graph libs
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import argparse
+
+
+def main(args):
+    n = args.n
+
+    # INPUT
+    # n = int(input("Pls give me the max number to check prime numbers or just press 'enter': ")) 
+
+    # if n == '':
+    #     exit()
+    #     n = random.randint(0, 10000000)
+
+    # OUTPUT FILES
+    primes = open('primes.txt', 'w')
+    df = open('primes_data.txt', 'w')
+
+    # BASIC INFO
+    primes.write("{")
+    df.write('chain,number_of_1s\n')
+    
+    # LOGIC
+    i = 0
+    for number in range(n + 1):
+        if (isPrime(number)):
+            primes.write(bin(number)[2::] + ', ')
+
+            df.write(str(i) + ',' + str(hammingWeight(number)) + '\n')
+            i += 1
+
+    primes.write('}')
+
+
+    # CLOSE FILES
+    primes.close()
+    df.close()
+
+
+    # PLOT
+    df = pd.read_csv('primes_data.txt')
+
+    # Plotting
+    # only dots and integers
+    plt.plot(df['chain'], df['number_of_1s'], 'bo')
+    plt.title('Binary Strings')
+    plt.xlabel('Chain')
+    plt.ylabel('Number of 1s')
+    plt.show()
+
+
 
 def isPrime(n):
     if(n > 1):
@@ -29,45 +66,6 @@ def isPrime(n):
     else:
         return False
     
-prime_numbers = []
-
-for number in range(n + 1):
-    if (isPrime(number)):
-        prime_numbers.append(number)
-        print(bin(number)[2::], end = ', ')
-
-print('}')
-
-
-# ========================================
-# Closing files
-sys.stdout.close()
-
-
-# GRAPH
-import pandas as pd
-import matplotlib.pyplot as plt
-'''
-  Data frame:
-# k = 3
-# bits = 2**3
-bits = 8
-chain        number_of_1s
- 1              0         -> epsilon   
- 2              0         -> '000'
- 3              1         -> '001'
- 4              1         -> '010'
- 5              2         -> '011'
- 6              1         -> '100'
- 7              2         -> '101'
- 8              2         -> '110'
- 9              3         -> '111'
-
-'''
-
-chain = []   # empty = epsilon
-number_of_1s = [] # empty = epsilon
-
 
 def hammingWeight(n):
     """
@@ -83,29 +81,42 @@ def hammingWeight(n):
 
     return count
 
-i = 1
-
-for prime in prime_numbers:
-    chain.append(i)
-    i += 1
-    number_of_1s.append(hammingWeight(prime))
-
-    
-
-df = pd.DataFrame({'chain': chain, 'number_of_1s': number_of_1s})
-
-# save to csv file
-df.to_csv('primes.csv', index = False)
 
 
-# Plotting
-# only dots and integers
-plt.plot(df['chain'], df['number_of_1s'], 'bo')
-plt.title('Binary Strings')
-plt.xlabel('Chain')
-plt.ylabel('Number of 1s')
-plt.show()
+def parse_args():
+    # setup arg parser
+    parser = argparse.ArgumentParser()
+
+    # random default value
+    default_n = random.randint(0, 10000000)
 
 
+    # add arguments
+    parser.add_argument("n",
+                        type=int, help="number of primes numbers to check",
+                        default=default_n, nargs='?')
+    # parse args
+    args = parser.parse_args()
 
+    # return args
+    return args
 
+# run script
+if __name__ == "__main__":
+    # add space in logs
+    print("\n\n")
+    print("*" * 60)
+    start = time.time()
+
+    # parse args
+    args = parse_args()
+
+    # run main function
+    main(args)
+
+    end = time.time()
+    print("Total time taken: {}s (Wall time)".format(end - start))
+    print("Number of primes numbers checked: {}".format(args.n))
+    # add space in logs
+    print("*" * 60)
+    print("\n\n")
