@@ -33,7 +33,7 @@ def main(args):
     print("="*20)
     print("Running exhaustive search for function 4:")
     for iteration in args.n:
-        a = 5
+        a = -5
         b = 5
         exhaustiveSearch(a, b, iteration, f4)
         print("")
@@ -76,7 +76,7 @@ def main(args):
 
     print("Running interval search for function 3:")
     for eps in args.eps:
-        a = -.90
+        a = -1
         b = 1.0
         intervalSearch(a, b, eps, f3)
         print("")
@@ -84,7 +84,7 @@ def main(args):
 
     print("Running interval search for function 4:")
     for eps in args.eps:
-        a = 5
+        a = -5
         b = 5
         intervalSearch(a, b, eps, f4)
         print("")
@@ -124,6 +124,8 @@ def f2(x):
     return y
 
 def f3(x):
+    if x == 0:
+      return 0.00001
     y = 3*x**2 + 12.0/x**3 - 5.0
     return y
 
@@ -147,25 +149,30 @@ def findMinimum(x1, x2, x3, f):
     return 0
 
 def exhaustiveSearch(a, b, n, f):
-  x1 = a
-  deltaX = (b-a)/n
-  x2 = x1 + deltaX
-  x3 = x2 + deltaX
-  iteraciones = 0
-  while True:
-    iteraciones = iteraciones + 1
-    if findMinimum(x1,x2,x3, f) == 1:
-      print("The range of the minimum is betwen: ", x1, " and ", x3 )
-      break
-    else:
-      x1 = x2
-      x2 = x3
-      x3 = x2 + deltaX
-    if x3 > b:
-      break
-    #else:
-     # print("No existe un mínimo en (a,b) o un punto extremo (a ó b) es el mínimo")
-  print('Number of iterations: ', iteraciones)
+    x1 = a
+    deltaX = (b-a)/n
+    x2 = x1 + deltaX
+    x3 = x2 + deltaX
+    iteraciones = 0
+    while True:
+        iteraciones = iteraciones + 1
+        if findMinimum(x1,x2,x3, f) == 1:
+            print("El mínimo se encuentra entre", x1, " y ", x3 )
+            break
+        else:
+            x1 = x2
+            x2 = x3
+            x3 = x2 + deltaX
+            
+        if x3 > b:
+            break
+        #else:
+        # print("No existe un mínimo en (a,b) o un punto extremo (a ó b) es el mínimo")
+    print("Numero de iteraciones", iteraciones)
+
+
+
+
 
 def intervalSearch(a, b, eps, fun):
     xm= (a+b)/2
@@ -185,12 +192,12 @@ def intervalSearch(a, b, eps, fun):
         else:
             a = x1
             b = x2
+        
         L = b-a
         if abs(L) < eps:
             break
-    print('The optimal value is betwen', a, b)
-    print("Number of iterations", iteraciones)
-
+    print("El óptimo se encuentra en el intervalo", a, b)
+    print("numero de iteraciones", iteraciones)
 
 
 def parse_args():
