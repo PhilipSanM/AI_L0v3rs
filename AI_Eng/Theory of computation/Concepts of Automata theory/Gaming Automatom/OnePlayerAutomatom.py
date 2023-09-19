@@ -48,7 +48,6 @@ def main(args):
         path += str(board[r][c])
 
         if len(path) >= len(configurations) + 1:
-            print(path)
             paths.write(path + "\n")
             return
         
@@ -75,6 +74,7 @@ def main(args):
     classify_paths()
 
     # draw paths
+    turtle.tracer(0, 0)
     columns = len(configurations) + 1
     draw_paths(columns, configurations, squares)
 
@@ -215,9 +215,9 @@ def draw_paths(columns, configurations, squares):
         simon.penup()
         simon.setpos(aux_x + state_size/2, aux_y)
 
-        clearDigits(aux_x,aux_y, simon, line[0:-1], state_size, edge_size)
+        # clearDigits(aux_x,aux_y, simon, line[0:-1], state_size, edge_size)
 
-        drawDigit(aux_x,aux_y, simon, '1')
+        # drawDigit(aux_x,aux_y, simon, '1')
         simon.setpos(aux_x + state_size/2, aux_y)
 
         for digit in line[1:-1]:
@@ -226,18 +226,8 @@ def draw_paths(columns, configurations, squares):
 
             drawConnectionLines(aux_x, aux_y, simon, state_size)
             
-            drawDigit(aux_x + state_size/2,aux_y, simon, digit)
+            # drawDigit(aux_x + state_size/2,aux_y, simon, digit)
             # time.sleep(2)
-
-
-
-
-
-    
-    
-
-
-
 
     window.exitonclick()
 
