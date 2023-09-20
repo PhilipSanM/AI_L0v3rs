@@ -48,6 +48,7 @@ def main(args):
         path += str(board[r][c])
 
         if len(path) >= len(configurations) + 1:
+
             paths.write(path + "\n")
             return
         
@@ -74,14 +75,13 @@ def main(args):
     classify_paths()
 
     # draw paths
-    turtle.tracer(0, 0)
     columns = len(configurations) + 1
     draw_paths(columns, configurations, squares)
 
 
 def classify_paths():
     solutions = open("solution_paths.txt", "w")
-    errors = open("error_paths.txt", "w")
+
 
     # read paths
     paths = open("paths.txt", "r")
@@ -90,12 +90,10 @@ def classify_paths():
     for line in paths:
         if line[-2] == "9":
             solutions.write(line)
-        else:
-            errors.write(line)
 
     # closi files
     solutions.close()
-    errors.close()
+
 
 
 def initWindow():
@@ -172,6 +170,7 @@ def clearDigits(x,y, simon, digits, state_size, edge_size):
 def draw_paths(columns, configurations, squares):
 
     turtle.TurtleScreen._RUNNING=True    
+    turtle.tracer(0,0)
     simon = initTurtle()
     window = initWindow()
 
@@ -215,9 +214,7 @@ def draw_paths(columns, configurations, squares):
         simon.penup()
         simon.setpos(aux_x + state_size/2, aux_y)
 
-        # clearDigits(aux_x,aux_y, simon, line[0:-1], state_size, edge_size)
-
-        # drawDigit(aux_x,aux_y, simon, '1')
+        clearDigits(aux_x,aux_y, simon, line[0:-1], state_size, edge_size)
         simon.setpos(aux_x + state_size/2, aux_y)
 
         for digit in line[1:-1]:
@@ -225,10 +222,15 @@ def draw_paths(columns, configurations, squares):
             aux_y = levels[digit]
 
             drawConnectionLines(aux_x, aux_y, simon, state_size)
-            
-            # drawDigit(aux_x + state_size/2,aux_y, simon, digit)
+        
             # time.sleep(2)
 
+
+
+
+
+    
+    
     window.exitonclick()
 
 
@@ -237,10 +239,17 @@ def parse_args():
     # setup arg parser
     parser = argparse.ArgumentParser()
 
+    # no input
+    size = random.randint(1, 4)
+    # size = 50
+    configurations = ""
+    for _ in range(size):
+        configurations += random.choice(["r", "b"])
+
     # add arguments
     parser.add_argument("configurations",
                         type=str, help="string of the board configuration",
-                        default="rbb", nargs='?')
+                        default= configurations, nargs='?')
     # parse args
     args = parser.parse_args()
 
@@ -263,6 +272,7 @@ if __name__ == "__main__":
     end = time.time()
     print("Total time taken: {}s (Wall time)".format(end - start))
     print("String of the board configuration: {}".format(args.configurations))
+    print("Size of the string: {}".format(len(args.configurations)))
     # add space in logs
     print("*" * 60)
     print("\n\n")
