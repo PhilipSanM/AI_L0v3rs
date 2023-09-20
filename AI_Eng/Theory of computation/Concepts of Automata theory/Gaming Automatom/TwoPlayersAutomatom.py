@@ -10,7 +10,7 @@ import argparse
 
 import turtle
 
-
+import re
 '''
     start = 0, 0
     0     1    2   3
@@ -100,6 +100,8 @@ def main(args):
     p2_paths_file = "player2_correct_paths.txt"
     make_animation(p1_paths_file, p2_paths_file, board)
 
+    find_path("player1_correct_paths.txt", "AFK")
+
 
 def make_player(color, x, y):
     simon = turtle.Turtle()
@@ -111,6 +113,25 @@ def make_player(color, x, y):
     simon.shapesize(3,3,3)
     return simon
 
+
+def find_path(paths, actual_path):
+    # Leer paths
+    with open(paths, "r") as file:
+        content = file.read()
+
+    # Construir el patrón con actual_path
+    pattern = r'\b' + re.escape(actual_path) + r'\w*'
+
+    good_paths = re.findall(pattern, content)
+
+    if not good_paths:
+        print("No way man")
+        return None
+    return good_paths[0]
+
+def move_turtle(simon, letter, positions):
+    simon.setpos(positions[letter][0], positions[letter][1])
+
 def congratulate(simon, winner):
     simon.penup()
     simon.setpos(-200, -300)
@@ -118,6 +139,18 @@ def congratulate(simon, winner):
     simon.write("Congratulations {} you won!".format(winner), font=('Arial', 25, 'normal'))
     simon.penup()
     simon.setpos(0, 0)
+
+def define_positions_in_board(board):
+    positions = {}
+    pos_y = 250
+    for row in board:
+        pos_x = -240
+        for letter in row:
+            positions[letter] = (pos_x, pos_y)
+            pos_x += 160
+        pos_y -= 160
+
+    return positions
 
 def make_animation(player1_path, player2_path, board):
     p1_solutions = open("player1_paths.txt", "r")
@@ -133,12 +166,40 @@ def make_animation(player1_path, player2_path, board):
     player1 = make_player('#4D3D3D', -240, 250)
     player2 = make_player('#FBAC32', 240,250)
     player2.left(180)
-    # player1.forward(150)
+    
+
+    # Positions:
+    positions = define_positions_in_board(board)
+
 
     winner = False
     fortunate_turtle = "player1"
+
+    # Whose first?
+    path_player1 = ""
+    index_player1 = 0
+    index_player2 = 0
+    path_player2 = ""
+    
+    path_chosed_player1 = find_path(player1_path, 'A')
+    path_chosed_player2 = find_path(player2_path, 'D')
+
+    curr_player = random.choice([player1, player2])
+    competitor = player1 if curr_player == player2 else player2
+
+    curr_path = path_chosed_player1 if curr_player == player1 else path_chosed_player2
+    competitor_path = path_chosed_player1 if curr_player == player2 else path_chosed_player2
+
+    curr_index = index_player1 if curr_player == player1 else index_player2
+    competitor_index = index_player1 if curr_player == player2 else index_player2
+
+
     while not winner:
-        break
+        
+
+
+        curr_player = player1 if curr_player == player2 else player2
+        competitor = player1 if curr_player == player2 else player2
 
 
     congratulate(simon, fortunate_turtle)
