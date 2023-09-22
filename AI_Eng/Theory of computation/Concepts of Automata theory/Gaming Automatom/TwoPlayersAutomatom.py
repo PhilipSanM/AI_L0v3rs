@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import argparse
 
 import turtle
+from PIL import Image
+
 
 import re
 '''
@@ -92,15 +94,17 @@ def main(args):
     p1_paths_file = "player1_paths.txt"
     p2_paths_file = "player2_paths.txt"
 
-    draw_paths(columns, player1_configurations, squares, p1_paths_file, "A")
-    draw_paths(columns, player2_configurations, squares, p2_paths_file, "D")
+    draw_paths(columns, player1_configurations, squares, p1_paths_file, "A",'Player1Paths')
+    draw_paths(columns, player2_configurations, squares, p2_paths_file, "D",'Player2Paths')
+
+
 
     # Animation game
     p1_paths_file = "player1_correct_paths.txt"
     p2_paths_file = "player2_correct_paths.txt"
     make_animation(p1_paths_file, p2_paths_file, board)
 
-    find_path("player1_correct_paths.txt", "AFK")
+    # find_path("player1_correct_paths.txt", "DCF", 'F')
 
 
 def make_player(color, x, y):
@@ -114,19 +118,20 @@ def make_player(color, x, y):
     return simon
 
 
-def find_path(paths, actual_path):
+def find_path(paths, actual_path, without_letter=""):
     # Leer paths
     with open(paths, "r") as file:
         content = file.read()
 
-    # Construir el patrón con actual_path
-    pattern = r'\b' + re.escape(actual_path) + r'\w*'
+    # Construir el patrón con actual_path y sin without_letter
+    pattern = r'\b' + re.escape(actual_path) + r'[^' + re.escape(without_letter) + r']\w*'
 
     good_paths = re.findall(pattern, content)
 
     if not good_paths:
-        print("No way man")
+        # print("No way man")
         return None
+    # print(good_paths)
     return good_paths[0]
 
 def move_turtle(simon, letter, positions):
@@ -148,11 +153,14 @@ def define_positions_in_board(board):
         for letter in row:
             positions[letter] = (pos_x, pos_y)
             pos_x += 160
-        pos_y -= 160
+        pos_y -= 150
 
     return positions
 
-def make_animation(player1_path, player2_path, board):
+def Move_to_position(simon, letter, positions):
+    simon.setpos(positions[letter][0], positions[letter][1])
+
+def make_animation(player1_file, player2_file, board):
     p1_solutions = open("player1_paths.txt", "r")
     p2_solutions = open("player2_paths.txt", "r")
 
@@ -162,47 +170,105 @@ def make_animation(player1_path, player2_path, board):
     make_board(simon, board)
 
 
-    turtle.tracer(2,50)
+    
     player1 = make_player('#4D3D3D', -240, 250)
     player2 = make_player('#FBAC32', 240,250)
     player2.left(180)
     
+    turtle.tracer(1,50)
 
     # Positions:
     positions = define_positions_in_board(board)
 
 
     winner = False
-    fortunate_turtle = "player1"
+    
 
     # Whose first?
-    path_player1 = ""
+    path_player1 = "A"
     index_player1 = 0
     index_player2 = 0
-    path_player2 = ""
+    path_player2 = "D"
     
-    path_chosed_player1 = find_path(player1_path, 'A')
-    path_chosed_player2 = find_path(player2_path, 'D')
+    path_chosed_player1 = find_path(player1_file, 'A', 'X')
+    path_chosed_player2 = find_path(player2_file, 'D', 'X')
+    
+    if not path_chosed_player1 or not path_chosed_player2:
+        print("Theres a problem with the paths of:")
+        if not path_chosed_player1:
+            print("Player1")
+        else:
+            print("Player2")
+
+        return
 
     curr_player = random.choice([player1, player2])
     competitor = player1 if curr_player == player2 else player2
 
-    curr_path = path_chosed_player1 if curr_player == player1 else path_chosed_player2
-    competitor_path = path_chosed_player1 if curr_player == player2 else path_chosed_player2
+    curr_chosed = path_chosed_player1 if curr_player == player1 else path_chosed_player2
+    competitor_chosed = path_chosed_player1 if curr_player == player2 else path_chosed_player2
+
+    curr_path = path_player1 if curr_player == player1 else path_player2
+    competitor_path = path_player1 if curr_player == player2 else path_player2
 
     curr_index = index_player1 if curr_player == player1 else index_player2
     competitor_index = index_player1 if curr_player == player2 else index_player2
 
+    curr_file = player1_file if curr_player == player1 else player2_file
+    competitor_file = player1_file if curr_player == player2 else player2_file
 
     while not winner:
         
+        # wineer break
+        if competitor_index == len(competitor_chosed) - 1:
+            winner = competitor
+            break
+
+        # Move the turtle
+        # "AF"  'BF'    'AF'   'B'
+        # print(curr_chosed, curr_index)
+        # print(curr_chosed[curr_index + 1])
+        if curr_chosed[curr_index + 1] == competitor_path[-1]:
+            # print("---------------CHANGE PATH ----------")
+            # print('curr path:', curr_chosed)
+            
+            # Change Path
+            aux_path = curr_chosed
+            # print( curr_path, competitor_path[-1])
+            curr_chosed = find_path(curr_file, curr_path, competitor_path[-1])
+            # print('new path: ', curr_chosed)
+            if not curr_chosed:
+                # pass next turn
+                curr_chosed = aux_path
+                
+                # change turn
+                curr_file, competitor_file = competitor_file, curr_file
+                curr_player, competitor = competitor, curr_player
+                curr_chosed, competitor_chosed = competitor_chosed, curr_chosed
+                curr_path, competitor_path = competitor_path, curr_path
+                curr_index, competitor_index = competitor_index, curr_index
+                continue
+
+        curr_index += 1
+        curr_path += curr_chosed[curr_index]
+        Move_to_position(curr_player, curr_path[-1], positions)
+        
+
+        # change turn
+        curr_file, competitor_file = competitor_file, curr_file
+        curr_player, competitor = competitor, curr_player
+        curr_chosed, competitor_chosed = competitor_chosed, curr_chosed
+        curr_path, competitor_path = competitor_path, curr_path
+        curr_index, competitor_index = competitor_index, curr_index
 
 
-        curr_player = player1 if curr_player == player2 else player2
-        competitor = player1 if curr_player == player2 else player2
-
-
-    congratulate(simon, fortunate_turtle)
+        
+    if winner == player1:
+        congratulate(simon, "player1")
+    else:
+        congratulate(simon, "player2")
+        
+        
     window.exitonclick()
 
 
@@ -350,7 +416,7 @@ def clearDigits(x,y, simon, digits, state_size, edge_size):
 
 
 
-def draw_paths(columns, configurations, squares, paths_file, start):
+def draw_paths(columns, configurations, squares, paths_file, start, file_name):
     turtle.TurtleScreen._RUNNING=True    
     turtle.tracer(0,0)
     simon = initTurtle()
@@ -407,6 +473,11 @@ def draw_paths(columns, configurations, squares, paths_file, start):
             drawConnectionLines(aux_x, aux_y, simon, state_size)
         
             # time.sleep(2)
+        
+    canvas = window.getcanvas()
+
+    canvas.postscript(file=file_name + '.eps')
+    Image.open(file_name + '.eps').save(file_name + '.png', 'png')
     
     window.exitonclick()
 
@@ -415,7 +486,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     # no input
-    size = random.randint(1, 4)
+    size = random.randint(4, 7)
     # size = 50
     configurations_player1 = ""
     configurations_player2 = ""
@@ -423,6 +494,7 @@ def parse_args():
     for _ in range(size):
         configurations_player1 += random.choice(["r", "b"])
         configurations_player2 += random.choice(["r", "b"])
+
 
     # add arguments
     parser.add_argument("player1_configurations",
@@ -444,6 +516,13 @@ def parse_args():
         else:
             for _ in range(size - len(args.player1_configurations)):
                 args.player1_configurations += random.choice(["r", "b"])
+
+    if args.player1_configurations[-1] != "b":
+        args.player1_configurations = args.player1_configurations[:-1] + "b"
+    
+    if args.player2_configurations[-1] != "r":
+        args.player2_configurations = args.player2_configurations[:-1] + "r"
+    
     # return args
     return args
 
