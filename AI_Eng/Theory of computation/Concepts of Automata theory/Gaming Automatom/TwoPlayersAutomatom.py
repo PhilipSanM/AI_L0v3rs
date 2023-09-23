@@ -161,8 +161,6 @@ def Move_to_position(simon, letter, positions):
     simon.setpos(positions[letter][0], positions[letter][1])
 
 def make_animation(player1_file, player2_file, board):
-    p1_solutions = open("player1_paths.txt", "r")
-    p2_solutions = open("player2_paths.txt", "r")
 
     turtle.TurtleScreen._RUNNING=True    
     simon = initTurtle()
@@ -218,6 +216,7 @@ def make_animation(player1_file, player2_file, board):
     competitor_file = player1_file if curr_player == player2 else player2_file
 
     while not winner:
+        
         
         # wineer break
         if competitor_index == len(competitor_chosed) - 1:
@@ -487,7 +486,7 @@ def parse_args():
 
     # no input
     size = random.randint(4, 7)
-    # size = 50
+    # size = 7
     configurations_player1 = ""
     configurations_player2 = ""
 
