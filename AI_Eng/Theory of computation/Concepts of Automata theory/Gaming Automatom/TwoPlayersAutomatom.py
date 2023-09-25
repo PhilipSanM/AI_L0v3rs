@@ -35,8 +35,37 @@ def main(args):
     red_squares = ['B', 'D', 'E', 'G', 'J', 'L', 'M', 'O']
     black_squares = ['A', 'C', 'F', 'H', 'I', 'K', 'N', 'P']
 
-    player1_configurations = args.player1_configurations
-    player2_configurations = args.player2_configurations
+    player1_configurations = input("Enter the string of the player1: ")
+    player2_configurations = input("Enter the string of the player2: ")
+
+    size = random.randint(5, 50)
+    
+    if not player1_configurations and not player2_configurations:
+        for _ in range(size):
+            player1_configurations += random.choice(["r", "b"])
+            player2_configurations += random.choice(["r", "b"])
+
+    
+        # Checking if the size of both strings are equal in size
+    if len(player1_configurations) != len(player2_configurations):
+        size = max(len(player1_configurations), len(player2_configurations))
+        if size == len(player1_configurations):
+            for _ in range(size - len(player2_configurations)):
+                player2_configurations += random.choice(["r", "b"])
+        else:
+            for _ in range(size - len(player1_configurations)):
+                player1_configurations += random.choice(["r", "b"])
+
+    if player1_configurations[-1] != "b":
+        player1_configurations = player1_configurations[:-1] + "b"
+    
+    if player2_configurations[-1] != "r":
+        player2_configurations = player2_configurations[:-1] + "r"
+
+
+
+
+
     color = {"r": red_positions, "b": black_positions}
 
     squares = {"r": red_squares, "b": black_squares}
@@ -96,6 +125,11 @@ def main(args):
 
     draw_paths(columns, player1_configurations, squares, p1_paths_file, "A",'Player1Paths')
     draw_paths(columns, player2_configurations, squares, p2_paths_file, "D",'Player2Paths')
+
+    print("String configuration of the player1: {}".format(player1_configurations))
+    print("Size of the string of p1: {}".format(len(player1_configurations)))
+    print("String configuration of the player2: {}".format(player2_configurations))
+    print("Size of the string of p2: {}".format(len(player2_configurations)))
 
 
 
@@ -540,10 +574,6 @@ if __name__ == "__main__":
 
     end = time.time()
     print("Total time taken: {}s (Wall time)".format(end - start))
-    print("String configuration of the player1: {}".format(args.player1_configurations))
-    print("Size of the string of p1: {}".format(len(args.player1_configurations)))
-    print("String configuration of the player2: {}".format(args.player2_configurations))
-    print("Size of the string of p2: {}".format(len(args.player2_configurations)))
     # add space in logs
     print("*" * 60)
     print("\n\n")
