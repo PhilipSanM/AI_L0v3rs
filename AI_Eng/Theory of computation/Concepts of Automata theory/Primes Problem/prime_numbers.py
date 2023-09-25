@@ -7,53 +7,68 @@ import matplotlib.pyplot as plt
 
 import argparse
 
+import math
 
 def main(args):
-    n = args.n
+    while True:
+        n = input("Pls give me the max number to check prime numbers or just press 'enter': ")
+        if n == '':
+            n = random.randint(0, 100000000)
+        else:
+            n = int(n)
 
-    # INPUT
-    # n = int(input("Pls give me the max number to check prime numbers or just press 'enter': ")) 
-
-    # if n == '':
-    #     exit()
-    #     n = random.randint(0, 10000000)
-
-    # OUTPUT FILES
-    primes = open('primes.txt', 'w')
-    df = open('primes_data.txt', 'w')
-
-    # BASIC INFO
-    primes.write("{")
-    df.write('chain,number_of_1s\n')
-    
-    # LOGIC
-    i = 0
-    for number in range(n + 1):
-        if (isPrime(number)):
-            primes.write(bin(number)[2::] + ', ')
-
-            df.write(str(i) + ',' + str(hammingWeight(number)) + '\n')
-            i += 1
-
-    primes.write('}')
+        print(f"Your n is: {n}")
 
 
-    # CLOSE FILES
-    primes.close()
-    df.close()
+
+        # OUTPUT FILES
+        primes = open('primes.txt', 'w')
+        df = open('primes_data.txt', 'w')
+        df_log = open('primes_log10.txt','w')
+
+        # BASIC INFO
+        primes.write("{")
+        df.write('chain,number_of_1s\n')
+        df_log.write('chain,number_of_1s\n')
+        # LOGIC
+        i = 0
+        for number in range(n + 1):
+            if (isPrime(number)):
+                primes.write(bin(number)[2::] + ', ')
+
+                df.write(str(i) + ',' + str(hammingWeight(number)) + '\n')
+                df_log.write(str(i) + ',' + str(round(math.log10(hammingWeight(number)), 4)) + '\n')
+                i += 1
+
+        primes.write('}')
 
 
-    # PLOT
-    df = pd.read_csv('primes_data.txt')
+        # CLOSE FILES
+        primes.close()
+        df.close()
+        df_log.close()
 
-    # Plotting
-    # only dots and integers
-    plt.plot(df['chain'], df['number_of_1s'], 'bo')
-    plt.title('Binary Strings')
-    plt.xlabel('Chain')
-    plt.ylabel('Number of 1s')
-    plt.show()
 
+        # PLOT
+        df = pd.read_csv('primes_data.txt')
+        df_log = pd.read_csv('primes_log10.txt')
+        # Plotting
+        # only dots and integers
+        plt.plot(df['chain'], df['number_of_1s'], 'bo')
+        plt.title('Primes Binary Strings')
+        plt.xlabel('Chain')
+        plt.ylabel('Number of 1s')
+        plt.show()
+
+        plt.plot(df_log['chain'], df_log['number_of_1s'], 'bo')
+        plt.title('Primes Binary Strings in log10')
+        plt.xlabel('Chain')
+        plt.ylabel('Number of 1s')
+        plt.show()
+
+        if input("Do you want to continue? (y/n): ") == 'n':
+            break
+        print("-"*60)
 
 
 def isPrime(n):
