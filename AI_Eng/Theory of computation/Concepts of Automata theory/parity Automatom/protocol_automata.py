@@ -7,13 +7,12 @@ import argparse
 
 
 def main(args):
+    bits = 64
+    total = 10000000
     while True:
         
         if checkAutomatonStatus():
-            bits = args.bits
-            total = args.total
             createStrins(bits, total)
-            # createStrins(64, 100000)
             parity = open('parity.txt', 'w')
             nonparity = open('nonparity.txt', 'w')
 
@@ -35,15 +34,12 @@ def main(args):
             plotStates()
 
 
-            # ?
-            contin = input('Do you want to continue? (y/n): ')
-            if contin == 'n':
-                break
+
 
 
 def initWindow():
     window = turtle.Screen()
-    window.setup(width=900, height=700)
+    window.setup(width=900, height=850)
     window.bgcolor('#10F7DE')
     window.title('Parity Automaton')
     return window
@@ -88,8 +84,10 @@ def writeArrows(x, y, simon, label):
 
 
 def plotStates():
+    
 
-    turtle.TurtleScreen._RUNNING=True    
+    turtle.TurtleScreen._RUNNING=True   
+    turtle.tracer(0, 0) 
     simon = initTurtle()
     window = initWindow()
 
@@ -145,6 +143,53 @@ def plotStates():
     for data in arrows_data:
         writeArrows(data[1], data[2], simon, data[0])
 
+
+    # Drawing protocol
+    drawStates(-220, 350, simon, 'Q0')
+    
+    drawConnectionLines(220, 350, 40, simon)
+    drawStates(220, 350, simon, 'Q1')
+
+    # Lines
+    simon.penup()
+    simon.setpos(-180, 380)
+    simon.pendown()
+    simon.setpos(180, 380)
+    drawArrows(180, 380, simon)
+
+    simon.penup()
+    simon.setpos(175, 340)
+    simon.pendown()
+    simon.setpos(-175, 340)
+    drawArrows(-175, 340, simon)
+
+    drawArrows(250, 310, simon)
+
+        # Start
+    simon.penup()
+    simon.setpos(-350, 350)
+    simon.pendown()
+
+    simon.right(90) 
+    simon.right(90) 
+    simon.right(90) 
+    simon.forward(70)
+    simon.dot(15, '#000000')
+
+    simon.penup()
+    simon.setpos(-380, 350)
+    simon.write('start', font=('Arial', 16, 'normal'))
+    
+    simon.penup()
+    simon.setpos(330, 350)
+    simon.write('time out', font=('Arial', 16, 'normal'))
+
+    simon.penup()
+    simon.setpos(0, 300)
+    simon.write('ack', font=('Arial', 16, 'normal'))
+
+
+
     # Window close
     window.exitonclick()
 
@@ -176,8 +221,13 @@ def createStrins(k, total):
     output = open('BinaryStrings.txt', 'w')
     
     number_zeros_left = bits
+
+    max_number = 2 ** bits
     for j in range(total):
-        output.write(bin(j)[2::].zfill(number_zeros_left) + '\n')
+        
+        output.write(bin(
+            random.randint(0, max_number - 1)
+        )[2::].zfill(number_zeros_left) + '\n')
 
     output.close()
 
