@@ -7,7 +7,7 @@ function main()
     rule_c1 = 0
     rule_c2 = 0
     max_cicles = 1000
-    result_weights, cicles = perceptron_recursive(c1, c2, rule_c1, rule_c2, x0, weights, max_cicles, r, 1)
+    result_weights, cicles = perceptron(c1, c2, rule_c1, rule_c2, x0, weights, max_cicles, r)
     println(result_weights)
     println(cicles)
 end
@@ -18,10 +18,12 @@ function perceptron(c1, c2, rule_c1, rule_c2, x0, weights, max_cicles, r)
     result_weights = weights
     while true
         contin = false
-        for weight in c1
-            x1 = weight[1]
-            x2 = weight[2]
-            aux = [ x1, x2, x0]
+        for class in c1
+            aux = []
+            for variable in class
+                push!(aux, variable)
+            end
+            push!(aux, x0)
 
             out_function = aux' * result_weights
 
@@ -32,9 +34,11 @@ function perceptron(c1, c2, rule_c1, rule_c2, x0, weights, max_cicles, r)
         end
 
         for weight in c2
-            x1 = weight[1]
-            x2 = weight[2]
-            aux = [ x1, x2, x0]
+            aux = []
+            for class in weight
+                push!(aux, class)
+            end
+            push!(aux, x0)
             out_function = aux' * result_weights
 
             if out_function <= rule_c2                
