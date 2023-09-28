@@ -13,8 +13,8 @@ def main(args):
         
         if checkAutomatonStatus():
             createStrins(bits, total)
-            parity = open('parity.txt', 'w')
-            nonparity = open('nonparity.txt', 'w')
+            parity = open('parity.txt', 'a')
+            nonparity = open('nonparity.txt', 'a')
 
             # Sleep
             time.sleep(2)
@@ -218,7 +218,7 @@ def checkAutomatonStatus():
 
 def createStrins(k, total):
     bits = k
-    output = open('BinaryStrings.txt', 'w')
+    output = open('BinaryStrings.txt', 'a')
     
     number_zeros_left = bits
 
