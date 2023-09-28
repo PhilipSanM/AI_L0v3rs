@@ -49,22 +49,22 @@ def main(args):
         df_log.close()
 
 
-        # PLOT
-        df = pd.read_csv('primes_data.txt')
-        df_log = pd.read_csv('primes_log10.txt')
-        # Plotting
-        # only dots and integers
-        plt.plot(df['chain'], df['number_of_1s'], 'bo')
-        plt.title('Primes Binary Strings')
-        plt.xlabel('Chain')
-        plt.ylabel('Number of 1s')
-        plt.show()
+        # # PLOT
+        # df = pd.read_csv('primes_data.txt')
+        # df_log = pd.read_csv('primes_log10.txt')
+        # # Plotting
+        # # only dots and integers
+        # plt.plot(df['chain'], df['number_of_1s'], 'bo')
+        # plt.title('Primes Binary Strings')
+        # plt.xlabel('Chain')
+        # plt.ylabel('Number of 1s')
+        # plt.show()
 
-        plt.plot(df_log['chain'], df_log['number_of_1s'], 'bo')
-        plt.title('Primes Binary Strings in log10')
-        plt.xlabel('Chain')
-        plt.ylabel('Number of 1s')
-        plt.show()
+        # plt.plot(df_log['chain'], df_log['number_of_1s'], 'bo')
+        # plt.title('Primes Binary Strings in log10')
+        # plt.xlabel('Chain')
+        # plt.ylabel('Number of 1s')
+        # plt.show()
 
         if input("Do you want to continue? (y/n): ") == 'n':
             break
