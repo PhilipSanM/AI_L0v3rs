@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import argparse
+import collections
 
 import math
 
@@ -59,10 +60,7 @@ def main(args):
             
             aux_word[char] = i
                 
-
-
-        
-    
+   
     # 2 .- write title in file
     NFA_table_file.write('states, ')
     for letter in letters:
@@ -109,15 +107,47 @@ def main(args):
     NFA_table_file.close()
     NFA_table_file = pd.read_csv('NFA table.csv')
     NFA_table_file.to_excel('NFA table.xlsx', index=None, header=True, sheet_name="NFA table")
+    print(NFA_table_file)
 
 
     # 4.- Transforming NFA into  a DFA with a BFS:
+\
+
+    # working with NFA table and making BFS:
+    headers = []
+    for letter in letters:
+        if letter == 'W':
+            continue
+        headers.append(" " +letter)
+
+    NFA_states = NFA_table_file[headers]
+        
+    # declaring states:
+    total_states = set()
+    queue = collections.deque()
+
+    queue.append([1])
+    total_states.add([1])
+
+    while len(queue)>0:
+        state = queue.popleft()
+        index = 0
+        
+        for letter in letters:
+            if letter == 'W':
+                continue
+            
+            
+    
+
+
     
 
 
     # Closing files:
     code_file.close()
     reserved_words_file.close()
+
     
 
 
