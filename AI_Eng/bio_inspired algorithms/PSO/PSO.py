@@ -139,3 +139,4 @@ pso_2d(population, dimension, position_min, position_max, generation, fitness_cr
 animated_image = animation.ArtistAnimation(fig, images)
 #animated_image.save('pso_simple.gif', writer='pillow')
 plt.show()
+
