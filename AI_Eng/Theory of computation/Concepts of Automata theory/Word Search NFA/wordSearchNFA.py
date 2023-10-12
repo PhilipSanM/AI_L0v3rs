@@ -130,12 +130,11 @@ def main(args):
     total_states.add([1])
 
     while len(queue)>0:
-        state = queue.popleft()
-        index = 0
-        
+        states = queue.popleft()
+    
         for letter in letters:
-            if letter == 'W':
-                continue
+            
+
             
             
     
