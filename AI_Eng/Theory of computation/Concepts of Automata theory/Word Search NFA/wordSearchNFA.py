@@ -161,16 +161,18 @@ def main(args):
 
         # Making search for all of that states
         for state in curr_states: # [1, 2, 60]
+
             if state == 0:
                 continue
             
 
             def helper(state):# 1
                 
-                new_states = letters.copy()
+                new_states = clear_letters(reserved_words, headers)
                 table_NFA = pd.read_csv('NFA table.csv')
                 
                 if state == 1:
+ 
                     for letter in letters:
                         for line in reserved_words:
                             if letter == line[0]:
@@ -183,17 +185,23 @@ def main(args):
                                     # print(int(table_NFA.iloc[index,i]))
                                     if int(table_NFA.iloc[index,i]) != 0 and int(table_NFA.iloc[index,i]) != 1:
                                         states.append(int(table_NFA.iloc[index,i]))
-                                min_state = min(states)
-                                new_states[letter].add(min_state)
+                                if states:
+                                    min_state = min(states)
+                                    
+                                    new_states[letter].add(min_state)
                                 continue
                             
                             new_states[letter].add(1)
+
+
                              
 
                 else:
                     # find state in table
                     states = []
                     for letter in letters:
+                        if letter == 'W':
+                            continue
                         
                         index = table_NFA.index[table_NFA[letter] == state].tolist()
 
@@ -204,13 +212,15 @@ def main(args):
                     for i in range(len(table_NFA.loc[index]) - 1):
                         states.append(int(table_NFA.iloc[index,i]))
 
-                    if max(states) != state:
+                    if states and max(states) != state:
                         # find next letter:
 
                         for letter in letters:
-                            if table_NFA[table_NFA[letter] == state].empty:
+                            if not table_NFA[table_NFA[letter] == state + 1].empty:
 
                                 new_states[letter].add(state + 1)
+
+
                 return new_states
                 
             
@@ -218,12 +228,15 @@ def main(args):
 
             new_states = helper(state) # {'W': [1], 'a':[1, 2], 'u': [1, 60]}
 
+
             # adding new states to the dic:
             for letter, states in new_states.items():
-                
+
                 for aux_state in states:
+
                     aux_letters[letter].add(aux_state)
                     aux_letters[letter] = set(sorted(aux_letters[letter]))
+
 
 
         # adding new states to the queue:
@@ -259,9 +272,52 @@ def main(args):
 
     
 
+def defin_letter():
+    letters = {'W': 0}
+    i = 1
+    for line in reserved_words:
+        aux_word = {}
+        for char in line:
+            if char == '\n':
+                continue
+            
 
+            if char not in letters:
+                letters[char] = i
+                aux_word[char] = i
+                i += 1  
+                continue
+                
+
+            if char in aux_word:
+
+                      
+                repeted = 1
+                while char + str(repeted) in aux_word:
+                    repeted += 1
+                
+                if char + str(repeted) not in letters:
+                    letters[char + str(repeted)] = i
+                    i += 1
+                aux_word[char + str(repeted)] = i
+            
     
+            aux_word[char] = i
 
+    return letters
+    
+def clear_letters(reserved_words, headers):
+    letters = {'W': set([1])}
+
+    for line in reserved_words:
+        for char in line:
+            if char  == '\n':
+                continue
+            if char not in letters:
+                headers.append(char)
+
+            letters[char] = set()
+    return letters
 
 def parse_args():
     # setup arg parser
