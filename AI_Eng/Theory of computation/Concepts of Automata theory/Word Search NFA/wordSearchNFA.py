@@ -54,19 +54,18 @@ def main(args):
                     letters[char + str(repeted)] = i
                     i += 1
                 aux_word[char + str(repeted)] = i
-                
-
-                
             
             aux_word[char] = i
                 
    
     # 2 .- write title in file
-    NFA_table_file.write('states, ')
+    NFA_table_file.write('states,')
     for letter in letters:
         if letter == '\n':
             continue
-        NFA_table_file.write(letter + ', ')
+        NFA_table_file.write(letter + ',')
+
+    NFA_table_file.write('reserved word')
 
 
     state = 2
@@ -81,7 +80,6 @@ def main(args):
 
             if char in aux_word:
                
-                
                 repeted = 1
                 while char + str(repeted) in aux_word:
                     repeted += 1
@@ -100,6 +98,9 @@ def main(args):
         # Printing word in file:
         for i in range(len(word)):
             NFA_table_file.write(str(word[i]) + ', ')
+
+        NFA_table_file.write(line)
+
         
     NFA_table_file.write('\n')
 
@@ -107,37 +108,146 @@ def main(args):
     NFA_table_file.close()
     NFA_table_file = pd.read_csv('NFA table.csv')
     NFA_table_file.to_excel('NFA table.xlsx', index=None, header=True, sheet_name="NFA table")
-    print(NFA_table_file)
+
 
 
     # 4.- Transforming NFA into  a DFA with a BFS:
-\
+
+    # New file:
+    DFA_table_file = open('DFA table.csv', 'w')
 
     # working with NFA table and making BFS:
-    headers = []
-    for letter in letters:
-        if letter == 'W':
-            continue
-        headers.append(" " +letter)
+    headers = ['states', 'W']
+    letters = {'W': set([1])}
 
-    NFA_states = NFA_table_file[headers]
-        
-    # declaring states:
-    total_states = set()
+    for line in reserved_words:
+        for char in line:
+            if char  == '\n':
+                continue
+            if char not in letters:
+                headers.append(char)
+
+            letters[char] = set()
+
+    # 4.1- write headers:
+
+    for header in headers:
+        DFA_table_file.write(header + ',')
+
+    DFA_table_file.write('new state')
+
+    # closing
+    DFA_table_file.close()
+
+    DFA_dataframe = pd.read_csv('DFA table.csv')
+
+    # 4.2 - Find all states with a BFS:
+
     queue = collections.deque()
+    total_states = set()
 
     queue.append([1])
-    total_states.add([1])
+    total_states.add(tuple([1]))
 
-    while len(queue)>0:
-        states = queue.popleft()
-    
-        for letter in letters:
+
+
+    while len(queue) > 0:
+
+        # array of lletters:
+        aux_letters = letters.copy()
+  
+        
+        curr_states = queue.popleft()
+
+        # Making search for all of that states
+        for state in curr_states: # [1, 2, 60]
+            if state == 0:
+                continue
             
 
+            def helper(state):# 1
+                
+                new_states = letters.copy()
+                table_NFA = pd.read_csv('NFA table.csv')
+                
+                if state == 1:
+                    for letter in letters:
+                        for line in reserved_words:
+                            if letter == line[0]:
+
+                                states = []
+                                index = table_NFA.index[table_NFA['reserved word'] == ' ' +line[:-1]].tolist()[0]
+                    
+                                for i in range(len(table_NFA.loc[index]) - 1):
+                                    # print(i, index, 'XD')
+                                    # print(int(table_NFA.iloc[index,i]))
+                                    if int(table_NFA.iloc[index,i]) != 0 and int(table_NFA.iloc[index,i]) != 1:
+                                        states.append(int(table_NFA.iloc[index,i]))
+                                min_state = min(states)
+                                new_states[letter].add(min_state)
+                                continue
+                            
+                            new_states[letter].add(1)
+                             
+
+                else:
+                    # find state in table
+                    states = []
+                    for letter in letters:
+                        
+                        index = table_NFA.index[table_NFA[letter] == state].tolist()
+
+                        if len(index) != 0:
+                            index = index[0]
+                            break
+                    
+                    for i in range(len(table_NFA.loc[index]) - 1):
+                        states.append(int(table_NFA.iloc[index,i]))
+
+                    if max(states) != state:
+                        # find next letter:
+
+                        for letter in letters:
+                            if table_NFA[table_NFA[letter] == state].empty:
+
+                                new_states[letter].add(state + 1)
+                return new_states
+                
             
-            
-    
+
+
+            new_states = helper(state) # {'W': [1], 'a':[1, 2], 'u': [1, 60]}
+
+            # adding new states to the dic:
+            for letter, states in new_states.items():
+                
+                for aux_state in states:
+                    aux_letters[letter].add(aux_state)
+                    aux_letters[letter] = set(sorted(aux_letters[letter]))
+
+
+        # adding new states to the queue:
+
+        for letter, states in aux_letters.items():
+            if tuple(states) not in total_states and len(states) > 0:
+  
+                queue.append(states)
+                total_states.add(tuple(states))
+
+        # printing in csv:
+        aux_letters['states'] = curr_states
+        DFA_dataframe.loc[len(DFA_dataframe)] = aux_letters
+
+
+    # saving csv
+    DFA_dataframe.to_csv('DFA table.csv', index=None, header=True)
+
+    # 5.- passing csv to excel
+    DFA_dataframe.to_excel('DFA table.xlsx', index=None, header=True, sheet_name="DFA table")
+
+
+
+
 
 
     
