@@ -6,13 +6,44 @@
 using PlotlyJS, Statistics
 
 # Mahalanobis x::vector desconocido, m::vector medias, mcov::matriz de covarianza 
-distancia(x,m,mcov) = sqrt((x-m')*mcov*(x-m')')
+get_mahalanobis_distance(point,means,mcov) = sqrt((point-means')*mcov*(point-means')')
 
 graficar(x,y,z,color,nombre,modo) = scatter3d(
                                             x=x, y=y, z=z, 
                                             color=color, 
                                             name=nombre, 
                                             mode=modo)
+
+
+get_eucledian_distance(pointA, pointB) = sqrt(sum((point1 .- point2).^2))
+    
+
+function find_k_nearest_neighbors(k, classes, point):
+    distances = Dict()
+    for (key, value) = classes
+        for i in 1:length(value)
+            distances[(key, i)] = get_eucledian_distance(value[i], point)
+        end
+    end
+
+    distances = sort(collect(distances), by=x->x[2])
+    return distances[1:k]
+end
+
+function predict_using_knn(k, classes, point):
+    k_nn = find_k_nearest_neighbors(k, classes, point)
+
+    votes = Dict{eltype(classes), Int}(class => 0 for class in classes)
+
+    for (key, value) = k_nn
+        votes[key[1]] += 1
+    end
+
+    predicted_class = argmax(values(votes))
+
+    return predicted_class
+    
+end
 
                         
 function main()
@@ -47,12 +78,12 @@ function main()
 
         if 0≤p_cords[1]≤1 && 0≤p_cords[2]≤1 && 0≤p_cords[3]≤1
             
-            d = Dict( "Clase 1" => distancia(p_cords, mean1, cov1), "Clase 2" => distancia(p_cords, mean2, cov2));
-            min = minimum(values(d));
+            distances = Dict( "Clase 1" => get_mahalanobis_distance(p_cords, mean1, cov1), "Clase 2" => get_mahalanobis_distance(p_cords, mean2, cov2));
+            min = minimum(values(distances));
     
-            for (k, v) = d
-                if (v == min)
-                    println("\n\nEl pixel seleccionado pertenece a la $k")
+            for (key, value) = distances
+                if (value == min)
+                    println("\n\nEl pixel seleccionado pertenece a la $key")
                     break
                 end
             end 
