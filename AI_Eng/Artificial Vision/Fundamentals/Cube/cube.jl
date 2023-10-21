@@ -3,7 +3,7 @@
 #     VISION ARTIFICIAL
 #     PRACTICA 1 - PERTENECE AL CUBO 
 
-using PlotlyJS, Statistics
+using PlotlyJS, Statistics, LinearAlgebra
 
 # Mahalanobis x::vector desconocido, m::vector medias, mcov::matriz de covarianza 
 get_mahalanobis_distance(point,means,mcov) = sqrt((point-means')*mcov*(point-means')')
@@ -15,31 +15,52 @@ graficar(x,y,z,color,nombre,modo) = scatter3d(
                                             mode=modo)
 
 
-get_eucledian_distance(pointA, pointB) = sqrt(sum((point1 .- point2).^2))
+get_eucledian_distance(pointA, pointB) = sqrt(sum((pointA .- pointB).^2))
+
+
+
+
     
 
-function find_k_nearest_neighbors(k, classes, point):
+function get_max_prob_distance(x,m,mcov)
+    dato1 =  ℯ^(-(get_mahalanobis_distance(x, m, inv(mcov))))
+    dato2 = 1 / ((2*π^(3/2)) * det(mcov)^(-(1/2)))
+    return dato1 * dato2
+end
+
+function find_k_nearest_neighbors(k, classes, point)
     distances = Dict()
-    for (key, value) = classes
-        for i in 1:length(value)
-            distances[(key, i)] = get_eucledian_distance(value[i], point)
+
+    for (key, cords) = classes
+        for cord in eachcol(cords)
+            distance = get_eucledian_distance(point, cord)
+            distances[(key, cord)] = distance
         end
     end
 
     distances = sort(collect(distances), by=x->x[2])
+
     return distances[1:k]
 end
 
-function predict_using_knn(k, classes, point):
+function predict_using_knn(k, classes, point)
     k_nn = find_k_nearest_neighbors(k, classes, point)
 
-    votes = Dict{eltype(classes), Int}(class => 0 for class in classes)
+    votes = Dict("Clase 1" => 0, "Clase 2" => 0)
 
     for (key, value) = k_nn
         votes[key[1]] += 1
     end
 
-    predicted_class = argmax(values(votes))
+    predicted_class = ""
+
+    max_class = maximum(values(votes))
+    for (key, value) = votes
+        if (value == max_class)
+            predicted_class = key
+            break
+        end
+    end
 
     return predicted_class
     
@@ -71,6 +92,9 @@ function main()
     trace1 = graficar([cords_c1[1,:]; mean1[1]], [cords_c1[2,:]; mean1[2]], [cords_c1[3,:]; mean1[3]], :red3, "Class 1", "markers+lines")
     trace2 = graficar([cords_c2[1,:]; mean2[2]], [cords_c2[2,:]; mean2[2]], [cords_c2[3,:]; mean2[3]], :blue, "Class 2", "markers+lines" )
 
+    classes = Dict("Clase 1" => cords_c1, "Clase 2" => cords_c2)
+
+
     while true
         println("Enter coordinates: x,y,z")
         punto = readline()
@@ -89,10 +113,51 @@ function main()
             end 
 
             trace3 = graficar([p_cords[1]], [p_cords[2]], [p_cords[3]], :green, "Unknown", "markers")
+           
+        else
+            println("El punto seleccionado se encuentra fuera del cubo")
+        end
+
+
+        
+        if 0≤p_cords[1]≤1 && 0≤p_cords[2]≤1 && 0≤p_cords[3]≤1
+            
+            K = 5
+            predicted_class = predict_using_knn(K, classes, p_cords)
+            println("\n\nEl pixel seleccionado pertenece a la $predicted_class")
+
+         
+            
+        else
+            println("El punto seleccionado se encuentra fuera del cubo")
+        end
+
+        println("MAX PROBA")     
+
+
+        if 0≤p_cords[1]≤1 && 0≤p_cords[2]≤1 && 0≤p_cords[3]≤1
+            
+            distances = Dict( "Clase 1" => get_max_prob_distance(p_cords, mean1, cov1), "Clase 2" => get_max_prob_distance(p_cords, mean2, cov2));
+            min = maximum(values(distances));
+    
+            for (key, value) = distances
+                if (value == min)
+                    println("\n\nEl pixel seleccionado pertenece a la $key")
+                    break
+                end
+            end 
+
+            
+
+            trace3 = graficar([p_cords[1]], [p_cords[2]], [p_cords[3]], :green, "Unknown", "markers")
+
             display(plot([trace1, trace2, trace3], layout))
         else
             println("El punto seleccionado se encuentra fuera del cubo")
         end
+
+
+
 
         println("\n\nSi deseas salir del programas ingresa 'q' ");
         input = readline(stdin);
