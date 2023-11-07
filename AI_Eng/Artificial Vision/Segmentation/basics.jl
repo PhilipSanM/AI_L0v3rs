@@ -1,64 +1,5 @@
-# Segementation basics
-# start date : 16 Octiber 2023
-
-using Images, TestImages, ImageView
-
+using Images, ImageView
 import Gtk4.open_dialog as dig
-
-function main()
-    path::String = dig("Pick a File"; start_folder = "C:/Users/MrJel/Desktop/Felix/Gitthis/AI_L0v3rs/AI_Eng/Artificial Vision/screw_db")
-    
-    img = load(path)
-
-    img = Gray.(img)
-    img = imresize(img, (256, 256))
-
-    img_binary = zeros(size(img))
-
-    threshold = 0.5  # Corrige el nombre de la variable
-
-
-    for i in 1:size(img, 1)
-        for j in 1:size(img, 2)
-            pixel = img[i, j]
-            if pixel > threshold
-                img_binary[i, j] = 1
-            else
-                img_binary[i, j] = 0
-            end
-        end
-    end
-
-    num_objects = 0
-
-    
-    painted_image = load(path)
-    painted_image = imresize(painted_image, (256, 256))
-    color_objects_blue = RGB{N0f8}(0, 0, 1)
-
-
-    for i in 1:size(img_binary, 1)
-        for j in 1:size(img_binary, 2)
-            if img_binary[i, j] == 1
-                num_objects += 1
-                dfs(img_binary, i, j, painted_image, color_objects_blue)
-            end
-        end
-    end
-
-    println("Number of objects: ", num_objects)
-    display(painted_image)
-
-    # print("Sizez of the image: ", size(img_binary, 1), " ", size(img_binary, 2))
-    # print("sizes of the new img ", size(painted_image, 1), " ", size(painted_image, 2))
-
-
-    
-
-    
-
-    # Aquí puedes realizar alguna operación adicional con la imagen binarizada si lo deseas.
-end
 
 function dfs(matrix, i, j, painted_image, color_objects)
     if i < 1 || i >= size(matrix, 1) || j < 1 || j >= size(matrix, 2)
@@ -85,7 +26,45 @@ function dfs(matrix, i, j, painted_image, color_objects)
 
 end
 
+function main()
+    path::String = dig("Pick a File"; start_folder = "C:/Users/diego/OneDrive/Escritorio/ESCOM/5SEM/VA/Parcial2/bd")
+    
+    img = load(path)
+    img = imresize(img, (256, 256))
 
+    painted_image = copy(img)
+    img = Gray.(img)
+    img_binary = zeros(size(img))
+    m,n= size(img)
+
+    threshold = 0.5 
+
+    for i in eachindex(img)
+        pixel = img[i]
+        if pixel > threshold
+            img_binary[i] = 1
+        else
+            img_binary[i] = 0
+        end
+    end
+
+    num_objects = 0
+
+    for i in 1:m
+        for j in 1:n
+            if img_binary[i, j] == 1
+                num_objects += 1
+                dfs(img_binary, i, j, painted_image, RGB(rand(3)...))
+            end
+        end
+    end
+
+    println("Number of objects: ", num_objects)
+    display(painted_image)
+
+    print("Sizez of the image: ", size(img_binary, 1), " ", size(img_binary, 2))
+    print("sizes of the new img ", size(painted_image, 1), " ", size(painted_image, 2))
+end
 
 
 
