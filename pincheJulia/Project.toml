@@ -1,0 +1,10 @@
+name = "pincheJulia"
+uuid = "b6b06f65-e4a3-4c05-a346-d6094beba40e"
+authors = ["Felipe Sanchez Martinez <felipesanchezmart@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Gtk4 = "9db2cae5-386f-4011-9d63-a5602296539b"
