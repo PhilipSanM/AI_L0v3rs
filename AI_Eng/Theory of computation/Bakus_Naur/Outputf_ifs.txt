@@ -1,0 +1,412 @@
+if (Condicional):
+	if (Condicional):
+		if (Condicional):
+			if (Condicional):
+				if (Condicional):
+					if (Condicional):
+						if (Condicional):
+							if (Condicional):
+								if (Condicional):
+									if (Condicional):
+										if (Condicional):
+											if (Condicional):
+												if (Condicional):
+													Statement
+												else:
+													if (Condicional):
+														if (Condicional):
+															if (Condicional):
+																Statement
+															else:
+																if (Condicional):
+																	Statement
+																else:
+																	Statement
+																else:
+																	if (Condicional):
+																		if (Condicional):
+																			if (Condicional):
+																				if (Condicional):
+																					Statement
+																				else:
+																					Statement
+																				else:
+																					if (Condicional):
+																						Statement
+																					else:
+																						if (Condicional):
+																							if (Condicional):
+																								Statement
+																							else:
+																								if (Condicional):
+																									if (Condicional):
+																										Statement
+																									else:
+																										Statement
+																									else:
+																										Statement
+																									else:
+																										if (Condicional):
+																											if (Condicional):
+																												if (Condicional):
+																													if (Condicional):
+																														if (Condicional):
+																															if (Condicional):
+																																if (Condicional):
+																																	Statement
+																																else:
+																																	if (Condicional):
+																																		Statement
+																																	else:
+																																		Statement
+																																	else:
+																																		if (Condicional):
+																																			if (Condicional):
+																																				Statement
+
+																																			else:
+																																				Statement
+																																			else:
+																																				if (Condicional):
+																																					if (Condicional):
+																																						if (Condicional):
+																																							if (Condicional):
+																																								if (Condicional):
+																																									Statement
+																																								else:
+																																									Statement
+																																								else:
+																																									Statement
+																																								else:
+																																									Statement
+																																								else:
+																																									Statement
+																																								else:
+																																									if (Condicional):
+																																										if (Condicional):
+																																											if (Condicional):
+																																												if (Condicional):
+																																													if (Condicional):
+																																														if (Condicional):
+																																															if (Condicional):
+																																																if (Condicional):
+																																																	if (Condicional):
+																																																		if (Condicional):
+																																																			if (Condicional):
+																																																				if (Condicional):
+																																																					Statement
+																																																				else:
+																																																					if (Condicional):
+																																																						if (Condicional):
+																																																							Statement
+
+																																																						else:
+																																																							if (Condicional):
+																																																								Statement
+
+																																																							else:
+																																																								Statement
+																																																							else:
+																																																								if (Condicional):
+																																																									Statement
+
+																																																								else:
+																																																									if (Condicional):
+																																																										if (Condicional):
+																																																											Statement
+																																																										else:
+																																																											if (Condicional):
+																																																												if (Condicional):
+																																																													if (Condicional):
+																																																														if (Condicional):
+																																																															if (Condicional):
+																																																																if (Condicional):
+																																																																	if (Condicional):
+																																																																		if (Condicional):
+																																																																			Statement
+																																																																		else:
+																																																																			Statement
+																																																																		else:
+																																																																			Statement
+																																																																		else:
+																																																																			Statement
+																																																																		else:
+																																																																			if (Condicional):
+																																																																				Statement
+																																																																			else:
+																																																																				if (Condicional):
+																																																																					Statement
+																																																																				else:
+																																																																					Statement
+																																																																				else:
+																																																																					if (Condicional):
+																																																																						if (Condicional):
+																																																																							if (Condicional):
+																																																																								Statement
+
+																																																																							else:
+																																																																								if (Condicional):
+																																																																									if (Condicional):
+																																																																										if (Condicional):
+																																																																											if (Condicional):
+																																																																												if (Condicional):
+																																																																													if (Condicional):
+																																																																														if (Condicional):
+																																																																															if (Condicional):
+																																																																																if (Condicional):
+																																																																																	if (Condicional):
+																																																																																		if (Condicional):
+																																																																																			if (Condicional):
+																																																																																				if (Condicional):
+																																																																																					if (Condicional):
+																																																																																						Statement
+																																																																																					else:
+																																																																																						Statement
+																																																																																					else:
+																																																																																						if (Condicional):
+																																																																																							if (Condicional):
+																																																																																								if (Condicional):
+																																																																																									Statement
+																																																																																								else:
+																																																																																									if (Condicional):
+																																																																																										Statement
+
+																																																																																									else:
+																																																																																										Statement
+																																																																																									else:
+																																																																																										if (Condicional):
+																																																																																											if (Condicional):
+																																																																																												Statement
+																																																																																											else:
+																																																																																												if (Condicional):
+																																																																																													if (Condicional):
+																																																																																														if (Condicional):
+																																																																																															if (Condicional):
+																																																																																																Statement
+																																																																																															else:
+																																																																																																if (Condicional):
+																																																																																																	if (Condicional):
+																																																																																																		if (Condicional):
+																																																																																																			if (Condicional):
+																																																																																																				if (Condicional):
+																																																																																																					Statement
+																																																																																																				else:
+																																																																																																					if (Condicional):
+																																																																																																						Statement
+
+																																																																																																					else:
+																																																																																																						if (Condicional):
+																																																																																																							Statement
+																																																																																																						else:
+																																																																																																							if (Condicional):
+																																																																																																								if (Condicional):
+																																																																																																									if (Condicional):
+																																																																																																										if (Condicional):
+																																																																																																											if (Condicional):
+																																																																																																												if (Condicional):
+																																																																																																													Statement
+
+																																																																																																												else:
+																																																																																																													if (Condicional):
+																																																																																																														if (Condicional):
+																																																																																																															Statement
+
+																																																																																																														else:
+																																																																																																															Statement
+																																																																																																														else:
+																																																																																																															Statement
+																																																																																																														else:
+																																																																																																															if (Condicional):
+																																																																																																																if (Condicional):
+																																																																																																																	Statement
+																																																																																																																else:
+																																																																																																																	Statement
+																																																																																																																else:
+																																																																																																																	if (Condicional):
+																																																																																																																		Statement
+
+																																																																																																																	else:
+																																																																																																																		if (Condicional):
+																																																																																																																			if (Condicional):
+																																																																																																																				if (Condicional):
+																																																																																																																					Statement
+																																																																																																																				else:
+																																																																																																																					if (Condicional):
+																																																																																																																						Statement
+																																																																																																																					else:
+																																																																																																																						Statement
+																																																																																																																					else:
+																																																																																																																						if (Condicional):
+																																																																																																																							if (Condicional):
+																																																																																																																								Statement
+																																																																																																																							else:
+																																																																																																																								if (Condicional):
+																																																																																																																									if (Condicional):
+																																																																																																																										Statement
+																																																																																																																									else:
+																																																																																																																										Statement
+																																																																																																																									else:
+																																																																																																																										if (Condicional):
+																																																																																																																											if (Condicional):
+																																																																																																																												if (Condicional):
+																																																																																																																													Statement
+																																																																																																																												else:
+																																																																																																																													Statement
+																																																																																																																												else:
+																																																																																																																													Statement
+																																																																																																																												else:
+																																																																																																																													if (Condicional):
+																																																																																																																														if (Condicional):
+																																																																																																																															if (Condicional):
+																																																																																																																																if (Condicional):
+																																																																																																																																	if (Condicional):
+																																																																																																																																		if (Condicional):
+																																																																																																																																			if (Condicional):
+																																																																																																																																				if (Condicional):
+																																																																																																																																					Statement
+																																																																																																																																				else:
+																																																																																																																																					if (Condicional):
+																																																																																																																																						if (Condicional):
+																																																																																																																																							if (Condicional):
+																																																																																																																																								if (Condicional):
+																																																																																																																																									Statement
+																																																																																																																																								else:
+																																																																																																																																									Statement
+																																																																																																																																								else:
+																																																																																																																																									if (Condicional):
+																																																																																																																																										if (Condicional):
+																																																																																																																																											Statement
+																																																																																																																																										else:
+																																																																																																																																											Statement
+																																																																																																																																										else:
+																																																																																																																																											if (Condicional):
+																																																																																																																																												if (Condicional):
+																																																																																																																																													if (Condicional):
+																																																																																																																																														if (Condicional):
+																																																																																																																																															if (Condicional):
+																																																																																																																																																Statement
+
+
+																																																																																																																																															else:
+																																																																																																																																																Statement
+																																																																																																																																															else:
+																																																																																																																																																if (Condicional):
+																																																																																																																																																	if (Condicional):
+																																																																																																																																																		Statement
+																																																																																																																																																	else:
+																																																																																																																																																		Statement
+																																																																																																																																																	else:
+																																																																																																																																																		if (Condicional):
+																																																																																																																																																			if (Condicional):
+																																																																																																																																																				if (Condicional):
+																																																																																																																																																					if (Condicional):
+																																																																																																																																																						if (Condicional):
+																																																																																																																																																							if (Condicional):
+																																																																																																																																																								if (Condicional):
+																																																																																																																																																									if (Condicional):
+																																																																																																																																																										if (Condicional):
+																																																																																																																																																											if (Condicional):
+																																																																																																																																																												if (Condicional):
+																																																																																																																																																													if (Condicional):
+																																																																																																																																																														if (Condicional):
+																																																																																																																																																															Statement
+																																																																																																																																																														else:
+																																																																																																																																																															if (Condicional):
+																																																																																																																																																																if (Condicional):
+																																																																																																																																																																	if (Condicional):
+																																																																																																																																																																		if (Condicional):
+																																																																																																																																																																			Statement
+																																																																																																																																																																		else:
+																																																																																																																																																																			if (Condicional):
+																																																																																																																																																																				Statement
+
+																																																																																																																																																																			else:
+																																																																																																																																																																				if (Condicional):
+																																																																																																																																																																					Statement
+																																																																																																																																																																				else:
+																																																																																																																																																																					Statement
+																																																																																																																																																																				else:
+																																																																																																																																																																					if (Condicional):
+																																																																																																																																																																						if (Condicional):
+																																																																																																																																																																							if (Condicional):
+																																																																																																																																																																								Statement
+																																																																																																																																																																							else:
+																																																																																																																																																																								Statement
+																																																																																																																																																																							else:
+																																																																																																																																																																								if (Condicional):
+																																																																																																																																																																									Statement
+
+																																																																																																																																																																								else:
+																																																																																																																																																																									if (Condicional):
+																																																																																																																																																																										if (Condicional):
+																																																																																																																																																																											Statement
+																																																																																																																																																																										else:
+																																																																																																																																																																											Statement
+																																																																																																																																																																										else:
+																																																																																																																																																																											Statement
+																																																																																																																																																																										else:
+																																																																																																																																																																											if (Condicional):
+																																																																																																																																																																												if (Condicional):
+																																																																																																																																																																													if (Condicional):
+																																																																																																																																																																														if (Condicional):
+																																																																																																																																																																															if (Condicional):
+																																																																																																																																																																																if (Condicional):
+																																																																																																																																																																																	if (Condicional):
+																																																																																																																																																																																		if (Condicional):
+																																																																																																																																																																																			if (Condicional):
+																																																																																																																																																																																				if (Condicional):
+																																																																																																																																																																																					Statement
+																																																																																																																																																																																				else:
+																																																																																																																																																																																					Statement
+
+																																																																																																																																																																																				else:
+																																																																																																																																																																																					if (Condicional):
+																																																																																																																																																																																						Statement
+																																																																																																																																																																																					else:
+																																																																																																																																																																																						Statement
+
+																																																																																																																																																																																					else:
+																																																																																																																																																																																						if (Condicional):
+																																																																																																																																																																																							Statement
+																																																																																																																																																																																						else:
+																																																																																																																																																																																							if (Condicional):
+																																																																																																																																																																																								if (Condicional):
+																																																																																																																																																																																									Statement
+																																																																																																																																																																																								else:
+																																																																																																																																																																																									Statement
+																																																																																																																																																																																								else:
+																																																																																																																																																																																									if (Condicional):
+																																																																																																																																																																																										if (Condicional):
+																																																																																																																																																																																											if (Condicional):
+																																																																																																																																																																																												if (Condicional):
+																																																																																																																																																																																													if (Condicional):
+																																																																																																																																																																																														if (Condicional):
+																																																																																																																																																																																															Statement
+																																																																																																																																																																																														else:
+																																																																																																																																																																																															Statement
+																																																																																																																																																																																														else:
+																																																																																																																																																																																															Statement
+																																																																																																																																																																																														else:
+																																																																																																																																																																																															if (Condicional):
+																																																																																																																																																																																																if (Condicional):
+																																																																																																																																																																																																	if (Condicional):
+																																																																																																																																																																																																		Statement
+																																																																																																																																																																																																	else:
+																																																																																																																																																																																																		Statement
+																																																																																																																																																																																																	else:
+																																																																																																																																																																																																		if (Condicional):
+																																																																																																																																																																																																			Statement
+
+																																																																																																																																																																																																		else:
+																																																																																																																																																																																																			if (Condicional):
+																																																																																																																																																																																																				if (Condicional):
+																																																																																																																																																																																																					if (Condicional):
+																																																																																																																																																																																																						Statement
+																																																																																																																																																																																																					else:
+																																																																																																																																																																																																						if (Condicional):
+																																																																																																																																																																																																							Statement
+																																																																																																																																																																																																						else:
+																																																																																																																																																																																																							Statement
+																																																																																																																																																																																																						else:
+																																																																																																																																																																																																							if (Condicional):
+																																																																																																																																																																																																								Statement
