@@ -38,7 +38,7 @@ def main(args):
     player1_configurations = input("Enter the string of the player1: ")
     player2_configurations = input("Enter the string of the player2: ")
 
-    size = random.randint(5, 50)
+    size = random.randint(5, 7)
     
     if not player1_configurations and not player2_configurations:
         for _ in range(size):

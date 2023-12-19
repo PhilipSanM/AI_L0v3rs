@@ -7,8 +7,8 @@ import argparse
 
 
 def main(args):
-    bits = 64
-    total = 10000000
+    bits = 10
+    total = 10
     while True:
         
         if checkAutomatonStatus():
