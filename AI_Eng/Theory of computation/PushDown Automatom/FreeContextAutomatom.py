@@ -50,8 +50,8 @@ def main(args):
     while i < len(string):
         output.write(f"({curr_state}, {string[i::]}, {stack.items})\n")
         if len(string) < 11:
-            draw_automaton(simon, string + chr(92) + "n", i, stack.items, curr_state)
-            time.sleep(0.5)
+            draw_automaton(simon, string + chr(92) + "0", i, stack.items, curr_state)
+            time.sleep(1)
             
             
 
@@ -68,12 +68,13 @@ def main(args):
         else:
 
             curr_state = 'N/A'
+            print("AAAA")
             break
         i += 1  
 
 
     if len(string) < 11 :
-        draw_automaton(simon, string + chr(92) + "n", i, stack.items, curr_state)
+        draw_automaton(simon, string + chr(92) + "0", i, stack.items, curr_state)
         time.sleep(0.5)
 
 
@@ -83,7 +84,7 @@ def main(args):
     else:
         curr_state = 'N/A'
 
-    if len(string) < 11:
+    if len(string) < 11 and curr_state == 'f':
         draw_automaton(simon, "", 0, stack.items, curr_state)
         time.sleep(0.5)
 
@@ -132,7 +133,7 @@ def draw_automaton(simon, string, i, items, curr_state):
     simon.penup()
     simon.setpos(-200, -200)
     simon.pendown()
-    simon.write(items, font=('Arial', 22, 'normal'))
+    simon.write("[" + " | ".join(items) + ']', font=('Arial', 22, 'normal'))
 
     simon.penup()
     simon.setpos(-200, -100)
