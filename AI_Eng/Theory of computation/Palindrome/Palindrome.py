@@ -9,7 +9,7 @@ def main(args):
     lenght_palindrome =  input("Give me the length if the palindrome to generate, or press enter to generate randomly \n")
 
     if not lenght_palindrome:
-        lenght_palindrome = random.randint(100)
+        lenght_palindrome = random.randint(1,10000)
 
     lenght_palindrome = int(lenght_palindrome)
     print("Generating palindrome of length: {}".format(lenght_palindrome))
@@ -29,10 +29,10 @@ def main(args):
     is_odd = lenght_palindrome % 2 == 1 #NONE
 
     index = 0
-    while len(palindrome) != lenght_palindrome:    #11p11
+    while obtain_length(palindrome) != lenght_palindrome:    #11p11
 
         # Nones
-        if len(palindrome) > lenght_palindrome:
+        if obtain_length(palindrome) > lenght_palindrome:
             # epsilon
             palindrome = palindrome[:index] + palindrome[index + 1:]
             output.write(f"1 -> {palindrome}\n")
@@ -42,7 +42,7 @@ def main(args):
             palindrome = palindrome[:index] + rules[rule] + palindrome[index + 1:]
             output.write(f"{str(rule)} -> {palindrome}\n")
 
-        index = len(palindrome) // 2
+        index = obtain_length(palindrome) // 2
         
 
     
@@ -58,7 +58,12 @@ def main(args):
     output.close()
 
 
+def obtain_length(string):
+    length = 0
+    for char in string:
+        length += 1
 
+    return length
 
 
 
