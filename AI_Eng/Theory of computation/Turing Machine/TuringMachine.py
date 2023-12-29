@@ -17,9 +17,9 @@ def main(args):
     
     string =  input("Input a String in the language: {0^n 1^n | n >= 1} or just press enter to generate a random string \n")
 
-    max_length_string = 10
-    # max_length_string = 10000
-    if len(string) <= 16:
+    # max_length_string = 10
+    max_length_string = 100
+    if obtain_length(string) <= 16:
         turtle.TurtleScreen._RUNNING=True   
         turtle.tracer(1 , 0) 
         simon = initTurtle()
@@ -46,11 +46,11 @@ def main(args):
 
     output.write(f"{current_state} -> {string}\n")
 
-    while move < len(string) and current_state != 'q4' and current_state != 'N/A':
-        if len(string) <= 16:
+    while move < obtain_length(string) and current_state != 'q4' and current_state != 'N/A':
+        if obtain_length(string) <= 16:
             # time.sleep(10)
             draw_automaton(current_state, string, move, simon, gabriel)
-            time.sleep(1)
+            # time.sleep(1)
         
         if current_state == 'q0' and string[move] == '0':
             current_state = 'q1'
@@ -100,21 +100,21 @@ def main(args):
         
         output.write(f"{current_state} -> {string}\n")
 
-    if len(string) <= 16:
+    if obtain_length(string) <= 16:
         # time.sleep(10)
         draw_automaton(current_state, string, move, simon, gabriel)
-        time.sleep(1)
+        # time.sleep(10)
     
     if current_state == 'q4':
         print("String is ACCEPTED by the Turing Machine in the language: {0^n 1^n | n >= 1}")
-        if len(string) <= 16:
+        if obtain_length(string) <= 16:
             simon.penup()
             simon.setpos(-350, 350)
             simon.write("String is ACCEPTED by the Turing Machine in the language: {0^n 1^n | n >= 1}", font=('Arial', 15, 'normal'))
 
     else:
         print("String is NOT accepted by the Turing Machine in the language: {0^n 1^n | n >= 1}")
-        if len(string) <= 16:
+        if obtain_length(string) <= 16:
             simon.penup()
             simon.setpos(-350, 350)
             simon.write("String is NOT accepted by the Turing Machine in the language: {0^n 1^n | n >= 1}", font=('Arial', 15, 'normal'))
@@ -126,6 +126,12 @@ def main(args):
     output.close()
 
 
+def obtain_length(string):
+    length = 0
+    for char in string:
+        length += 1
+
+    return length
 
 
 def draw_automaton(curr_state, string, move, simon, gabriel):
