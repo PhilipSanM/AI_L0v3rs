@@ -9,7 +9,7 @@ def main(args):
     number_of_ifs =  input("Give me the number of If's you want to generate \n")
 
     if not number_of_ifs:
-        lenght_palindrome = random.randint(100)
+        number_of_ifs = random.randint(1,100)
 
     number_of_ifs = int(number_of_ifs)
     print("Generatin: {}".format(number_of_ifs) + " If's")
