@@ -16,12 +16,16 @@ def main(args):
     
     string =  input("Input a String in the language: {0^n 1^n | n >= 1} or just press enter to generate a random string \n")
 
-    max_length_string = 100
-    # max_length_string = 10000
+    # max_length_string = 100
+    max_length_string = 10000
 
     if not string:
         string = generate_random_string(max_length_string)
         print("Random string generated: {}".format(string))
+
+
+#   End of string
+    string += '\n'
 
 
         
@@ -29,9 +33,19 @@ def main(args):
     output = open('Outputf.txt', 'w', encoding='utf-8')
 
     # Logic:
+    length = 0
+
+    while True:
+        if string[length] != '\n':
+            length += 1
+        else:
+            break
+
+
+
 
     # Animation
-    if len(string) < 11:
+    if length < 11:
         turtle.TurtleScreen._RUNNING=True   
         turtle.tracer(1 , 0) 
         simon = initTurtle()
@@ -47,10 +61,11 @@ def main(args):
         gabriel.setpos(-100, 160)
 
     i = 0
-    while i < len(string):
+    while i < length:
         output.write(f"({curr_state}, {string[i::]}, {stack.items})\n")
-        if len(string) < 11:
-            draw_automaton(simon, string + chr(92) + "0", i, stack.items, curr_state)
+        if length < 11:
+            time.sleep(10)
+            draw_automaton(simon, string[0:length] + chr(92) + "0", i, stack.items, curr_state)
             time.sleep(1)
             
             
@@ -68,12 +83,11 @@ def main(args):
         else:
 
             curr_state = 'N/A'
-            print("AAAA")
             break
         i += 1  
 
 
-    if len(string) < 11 :
+    if length < 11 :
         draw_automaton(simon, string + chr(92) + "0", i, stack.items, curr_state)
         time.sleep(0.5)
 
@@ -84,7 +98,7 @@ def main(args):
     else:
         curr_state = 'N/A'
 
-    if len(string) < 11 and curr_state == 'f':
+    if length < 11 and curr_state == 'f':
         draw_automaton(simon, "", 0, stack.items, curr_state)
         time.sleep(0.5)
 
@@ -94,7 +108,7 @@ def main(args):
 
     if curr_state == 'f':
         print("String is accepted in the language")
-        if len(string) < 11:
+        if length < 11:
             simon.penup()
             simon.setpos(-260, 350)
             simon.pendown()
@@ -103,14 +117,14 @@ def main(args):
     else:
         print("String is not accepted in the language")
 
-        if len(string) < 11:
+        if length < 11:
             simon.penup()
             simon.setpos(-260, 350)
             simon.pendown()
             simon.write("String is not accepted in the language", font=('Arial', 22, 'normal'))
 
 
-    if len(string) < 11:
+    if length < 11:
     # Window close
         window.exitonclick()
 
