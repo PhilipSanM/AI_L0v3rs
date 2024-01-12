@@ -132,3 +132,5 @@ dmypy.json
 # pretrained models
 *.bin
 *.gz
+
+.vscode
