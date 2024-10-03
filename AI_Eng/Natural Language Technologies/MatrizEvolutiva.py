@@ -56,7 +56,7 @@ for i in range(len(matrizAcumulada)):
 print()
 #print(frecuenciasAcumuladas)
 
-numpalabras = 500
+numpalabras = 10
 indice = 0
 texto = ""
 prev = ""
